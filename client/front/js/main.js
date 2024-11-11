@@ -1,36 +1,35 @@
 
-// 从 localStorage 获取登录状态
+// From localStorage, retrieve login status and username
 let signed_up = localStorage.getItem("signed_up") === "true";
 let currentUserName = localStorage.getItem("currentUserName");
 
-// 当前聊天环境（默认示例）
+// Current chat environment (default example)
 let currentChat = { type: 'user', name: 'Chat Name' };
 
-// 页面加载时检查登录状态
+// Check login status on page load
 document.addEventListener("DOMContentLoaded", () => {
     if (!signed_up || !currentUserName) {
-        window.location.href = "index.html"; // 未登录则重定向到登录页面
+        window.location.href = "index.html"; // Redirect to login page if not logged in
     } else {
-        loadUserGroupLists(); // 加载用户和群组列表
-        loadMessages();       // 加载聊天消息
+        loadUserGroupLists(); // Load user and group lists
+        loadMessages();       // Load chat messages
     }
 
-    // 绑定发送按钮点击事件
+    // Bind send button click event
     document.getElementById("send-btn").addEventListener("click", sendMessage);
+    document.getElementById("file-input").addEventListener("change", () => sendFileOrPicture("file"));
+    document.getElementById("picture-input").addEventListener("change", () => sendFileOrPicture("picture"));
 });
 
-// Log Out 按钮点击事件
+// Log Out button click event
 document.getElementById("logout-btn").addEventListener("click", () => {
-    // 清除 localStorage 中的登录状态
     localStorage.removeItem("signed_up");
     localStorage.removeItem("currentUserName");
     localStorage.removeItem("serverIp");
-
-    // 重定向到登录页面
-    window.location.href = "index.html";
+    window.location.href = "index.html"; // Redirect to login page
 });
 
-// 发送消息到后端
+// Send message to backend
 function sendMessage() {
     const messageContent = document.getElementById("message-input").value.trim();
     if (!messageContent) {
@@ -38,19 +37,18 @@ function sendMessage() {
         return;
     }
 
-    // 准备发送的数据
+    // Prepare data to send
     const messageData = {
         source: currentUserName,
         target: currentChat.name,
         message: messageContent,
-        message_type: currentChat.type === 'user' ? "personal" : "group",
+        message_type: currentChat.type === 'group' ? "group" : "personal",
         type: "text"
     };
 
-    // 调试信息
     console.log("Sending message data:", messageData);
 
-    // 向后端发送消息
+    // Send message to backend
     fetch('/send_message', {
         method: 'POST',
         headers: {
@@ -61,13 +59,13 @@ function sendMessage() {
     .then(response => response.json())
     .then(data => {
         console.log("Message sent:", data);
-        document.getElementById("message-input").value = ""; // 清空输入框
-        loadMessages(); // 刷新消息列表
+        document.getElementById("message-input").value = ""; // Clear input field
+        loadMessages(); // Refresh messages
     })
     .catch(error => console.error('Error sending message:', error));
 }
 
-// 加载用户列表和群组列表
+// Load user and group lists
 function loadUserGroupLists() {
     fetch('data/users.csv')
         .then(response => response.text())
@@ -86,7 +84,7 @@ function loadUserGroupLists() {
         .catch(error => console.error('Error loading groups:', error));
 }
 
-// 显示用户列表
+// Display user list
 function displayUserList(users) {
     const usersList = document.getElementById('users');
     usersList.innerHTML = '';
@@ -106,7 +104,7 @@ function displayUserList(users) {
     });
 }
 
-// 显示群组列表
+// Display group list
 function displayGroupList(groups) {
     const groupsList = document.getElementById('groups');
     groupsList.innerHTML = '';
@@ -115,7 +113,6 @@ function displayGroupList(groups) {
         const li = document.createElement('li');
         li.textContent = group.name;
 
-        // 如果群组是由当前用户创建，应用特定样式
         if (group.created_by_user === 'true') {
             li.classList.add('user-created-group');
         }
@@ -125,7 +122,7 @@ function displayGroupList(groups) {
     });
 }
 
-// 加载消息队列
+// Load message queue
 function loadMessages() {
     fetch('data/message.csv')
         .then(response => response.text())
@@ -136,10 +133,10 @@ function loadMessages() {
         .catch(error => console.error('Error loading messages:', error));
 }
 
-// 显示消息
+// Display messages
 function displayMessages(messages) {
     const chatBox = document.querySelector('.messages ul');
-    chatBox.innerHTML = ''; // 清空现有消息
+    chatBox.innerHTML = ''; // Clear existing messages
 
     const filteredMessages = messages.filter(msg => {
         if (msg.message_type === 'personal') {
@@ -158,37 +155,31 @@ function displayMessages(messages) {
         const li = document.createElement('li');
         li.className = msg.source === currentUserName ? 'sent' : 'replies';
 
-        // 解析 timestamp 并格式化为用户名、日期和时间
         const timestamp = new Date(msg.timestamp);
-        const dateString = timestamp.toLocaleDateString('en-CA'); // 格式为 YYYY-MM-DD
-        const timeString = timestamp.toLocaleTimeString('en-GB'); // 格式为 HH:MM:SS
+        const dateString = timestamp.toLocaleDateString('en-CA');
+        const timeString = timestamp.toLocaleTimeString('en-GB');
         const userInfo = `${msg.source}, ${dateString}, ${timeString}`;
 
-        // 创建显示用户名、日期和时间的元素
         const infoElement = document.createElement('small');
         infoElement.textContent = userInfo;
 
-        // 添加头像和消息内容
         const avatar = document.createElement('div');
         avatar.className = 'avatar';
-        avatar.textContent = msg.source[0]; // 显示首字母
+        avatar.textContent = msg.source[0];
 
         const messageContent = document.createElement('p');
 
-        // 根据消息类型动态显示内容
         if (msg.type === 'text') {
             messageContent.textContent = msg.content;
         } else if (msg.type === 'file') {
-            // 仅显示文件名
-            const fileName = msg.content.split('/').pop(); // 提取文件名
+            const fileName = msg.content.split('/').pop();
             const fileLink = document.createElement('a');
             fileLink.href = `data/file/${msg.content}`;
             fileLink.textContent = fileName;
             fileLink.target = "_blank";
             messageContent.appendChild(fileLink);
         } else if (msg.type === 'picture') {
-            // 仅显示图片文件名，点击可查看图片
-            const imageName = msg.content.split('/').pop(); // 提取图片文件名
+            const imageName = msg.content.split('/').pop();
             const imageLink = document.createElement('a');
             imageLink.href = `data/picture/${msg.content}`;
             imageLink.textContent = imageName;
@@ -197,17 +188,15 @@ function displayMessages(messages) {
             const image = document.createElement('img');
             image.src = `data/picture/${msg.content}`;
             image.alt = `Image: ${imageName}`;
-            image.style.maxWidth = "200px"; // 限制图片最大宽度
+            image.style.maxWidth = "200px";
 
-            messageContent.appendChild(imageLink); // 显示图片文件名作为链接
-            messageContent.appendChild(document.createElement('br')); // 换行
-            messageContent.appendChild(image); // 显示图片
+            messageContent.appendChild(imageLink);
+            messageContent.appendChild(document.createElement('br'));
+            messageContent.appendChild(image);
         }
 
-        // 将用户信息放在消息内容的上方
         messageContent.appendChild(infoElement);
 
-        // 根据消息方向调整位置
         if (li.className === 'sent') {
             li.appendChild(messageContent);
             li.appendChild(avatar);
@@ -220,23 +209,46 @@ function displayMessages(messages) {
     });
 }
 
-// 切换聊天环境
+// Switch chat
 function switchChat(type, name) {
     currentChat = { type, name };
     document.querySelector('.contact-profile p').textContent = name;
     loadMessages();
 }
 
-// 群组管理按钮跳转
-document.getElementById("group-settings-btn").addEventListener("click", function() {
-    window.location.href = "group_management.html";
-});
-
-// 解析 CSV 数据
+// Parse CSV data
 function parseCSV(csvText) {
     const parsedData = Papa.parse(csvText, {
         header: true,
         skipEmptyLines: true
     });
     return parsedData.data;
+}
+
+// Send file or picture
+function sendFileOrPicture(type) {
+    const input = type === "file" ? document.getElementById("file-input") : document.getElementById("picture-input");
+    const file = input.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("source", currentUserName);
+    formData.append("target", currentChat.name);
+    formData.append("type", type);
+    formData.append("message_type", currentChat.type);
+
+    const endpoint = type === "file" ? "/send_file" : "/send_picture";
+
+    fetch(endpoint, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(`${type.charAt(0).toUpperCase() + type.slice(1)} sent:`, data);
+        loadMessages();
+        input.value = ""; // Reset file input
+    })
+    .catch(error => console.error('Error uploading:', error));
 }

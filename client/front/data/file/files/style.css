@@ -1,0 +1,267 @@
+/* 页面整体布局设置 */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    height: 100vh;
+    background: #ecf0f1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 设置左侧和右侧区域 */
+#frame {
+    display: flex;
+    height: 100%;
+}
+
+/* 左侧区域 */
+#sidepanel {
+    width: 350px;
+    background: #f4f6f9;
+    color: #333;
+    overflow-y: auto;
+    padding: 20px;
+    border-right: 2px solid #000;
+}
+
+/* 在线用户和群组标题 */
+#users-list h3, #groups-list h3 {
+    color: #333;
+    font-size: 22px;
+    font-family: 'Georgia', serif;
+    margin-bottom: 10px;
+    text-align: center;
+    border-bottom: 2px dashed #000;
+    padding-bottom: 10px;
+}
+
+/* 用户和群组列表 */
+#users, #groups {
+    list-style-type: none;
+    padding: 0;
+}
+
+#users li, #groups li {
+    padding: 8px;
+    margin-bottom: 5px;
+    background: #d1e8ff;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+}
+
+#users li:hover, #groups li:hover {
+    background: #b3d4ff;
+}
+
+/* 当前用户样式 */
+.current-user {
+    background-color: #d4edda !important; /* 浅绿色背景 */
+    color: #155724 !important; /* 深绿色文字 */
+    font-weight: bold !important;
+}
+
+/* 用户创建的群组样式 */
+.user-created-group {
+    background-color: #d4edda !important; /* 浅绿色背景 */
+    color: #155724 !important;           /* 深绿色文字 */
+    font-weight: bold;
+}
+
+/* 用户创建的群组悬停样式 */
+.user-created-group:hover {
+    background-color: #c3e6cb !important; /* 更深的浅绿色背景 */
+    color: #0b3d25 !important;           /* 更深的绿色文字 */
+}
+
+
+/* 右侧聊天区域 */
+.content {
+    flex-grow: 1;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.contact-profile {
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 3px dashed #000;
+}
+
+.contact-profile p {
+    font-size: 24px;
+    font-family: 'Georgia', serif;
+    font-style: italic;
+    font-weight: 300;
+    color: #2c3e50;
+}
+
+/* 消息区域 */
+.messages {
+    flex-grow: 1;
+    margin-bottom: 20px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+/* 左右对齐样式 */
+.sent {
+    display: flex;
+    justify-content: flex-end; /* 靠右显示 */
+    text-align: right;
+    margin-bottom: 15px;
+}
+
+.replies {
+    display: flex;
+    justify-content: flex-start; /* 靠左显示 */
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.sent p, .replies p {
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 60%;
+    word-wrap: break-word; /* 自动换行 */
+    margin: 0;
+}
+
+.sent p {
+    background-color: #d1ecf1; /* 自己的消息颜色 */
+    color: #0c5460;
+}
+
+.replies p {
+    background-color: #f1f1f1; /* 对方的消息颜色 */
+    color: #333;
+}
+
+/* 字母头像样式 */
+.avatar {
+    width: 35px;
+    height: 35px;
+    background-color: #3498db;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.sent .avatar {
+    order: 2; /* 将头像放在右侧 */
+    margin-left: 10px;
+    margin-right: 0;
+}
+
+/* 消息时间和用户名样式 */
+.messages ul li small {
+    font-size: 12px;
+    color: #888;
+    display: block;
+    margin: 5px 0 0;
+}
+
+/* 输入框 */
+.message-input {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background: #ecf0f1;
+    border-top: 1px solid #ddd;
+    width: 100%;
+}
+
+.message-input .wrap {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.message-input textarea {
+    width: 85%;
+    height: 50px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+    resize: none;
+    font-family: sans-serif;
+    font-size: 14px;
+}
+
+.message-input button {
+    background-color: #27ae60;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    margin-left: 10px;
+}
+
+/* 文件上传按钮样式 */
+.message-input .attachment {
+    font-size: 20px;
+    margin-right: 10px;
+    color: #27ae60;
+}
+
+/* 登录界面样式 */
+.login-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #ecf0f1;
+    text-align: center;
+}
+
+.login-screen h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #2c3e50;
+}
+
+.login-screen label {
+    font-size: 16px;
+    color: #333;
+    margin-top: 10px;
+    text-align: left;
+    width: 200px;
+}
+
+.login-screen input[type="text"] {
+    padding: 10px;
+    margin: 5px 0;
+    width: 200px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.login-screen button {
+    padding: 10px 20px;
+    margin-top: 15px;
+    border: none;
+    background-color: #27ae60;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 200px;
+}
+
+#loginMessage {
+    color: red;
+    margin-top: 10px;
+}
