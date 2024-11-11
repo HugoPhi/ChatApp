@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
-    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/login.css">
+    <script defer src="js/login.js"></script>
 </head>
 <body>
     <div class="login-screen">
@@ -13,13 +13,15 @@
             <label for="username">Username</label>
             <input type="text" id="username" required placeholder="Enter your username">
             
-            <label for="serverIp">Server IP:Port</label>
-            <input type="text" id="serverIp" required placeholder="e.g., 192.168.1.1:3000">
+            <label for="serverIp">Server IP</label>
+            <input type="text" id="serverIp" required placeholder="Enter server IP">
+
+            <label for="serverPort">Server Port</label>
+            <input type="text" id="serverPort" required placeholder="Enter server port">
             
-            <button type="submit">Sign Up</button>
+            <button type="submit">Sign In</button>
         </form>
         <p id="loginMessage"></p>
     </div>
-    <script src="js/login.js"></script>
 </body>
 </html>

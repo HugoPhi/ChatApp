@@ -1,6 +1,10 @@
+
 // 从 localStorage 获取登录状态
 let signed_up = localStorage.getItem("signed_up") === "true";
 let currentUserName = localStorage.getItem("currentUserName");
+
+// 当前聊天环境（默认示例）
+let currentChat = { type: 'user', name: 'Chat Name' };
 
 // 页面加载时检查登录状态
 document.addEventListener("DOMContentLoaded", () => {
@@ -10,6 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
         loadUserGroupLists(); // 加载用户和群组列表
         loadMessages();       // 加载聊天消息
     }
+
+    // 绑定发送按钮点击事件
+    document.getElementById("send-btn").addEventListener("click", sendMessage);
 });
 
 // Log Out 按钮点击事件
@@ -23,13 +30,41 @@ document.getElementById("logout-btn").addEventListener("click", () => {
     window.location.href = "index.html";
 });
 
-// 解析 CSV 数据
-function parseCSV(csvText) {
-    const parsedData = Papa.parse(csvText, {
-        header: true,
-        skipEmptyLines: true
-    });
-    return parsedData.data;
+// 发送消息到后端
+function sendMessage() {
+    const messageContent = document.getElementById("message-input").value.trim();
+    if (!messageContent) {
+        alert("Please enter a message to send.");
+        return;
+    }
+
+    // 准备发送的数据
+    const messageData = {
+        source: currentUserName,
+        target: currentChat.name,
+        message: messageContent,
+        message_type: currentChat.type === 'user' ? "personal" : "group",
+        type: "text"
+    };
+
+    // 调试信息
+    console.log("Sending message data:", messageData);
+
+    // 向后端发送消息
+    fetch('/send_message', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(messageData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Message sent:", data);
+        document.getElementById("message-input").value = ""; // 清空输入框
+        loadMessages(); // 刷新消息列表
+    })
+    .catch(error => console.error('Error sending message:', error));
 }
 
 // 加载用户列表和群组列表
@@ -79,7 +114,7 @@ function displayGroupList(groups) {
     groups.forEach(group => {
         const li = document.createElement('li');
         li.textContent = group.name;
-        
+
         // 如果群组是由当前用户创建，应用特定样式
         if (group.created_by_user === 'true') {
             li.classList.add('user-created-group');
@@ -102,7 +137,6 @@ function loadMessages() {
 }
 
 // 显示消息
-
 function displayMessages(messages) {
     const chatBox = document.querySelector('.messages ul');
     chatBox.innerHTML = ''; // 清空现有消息
@@ -186,10 +220,7 @@ function displayMessages(messages) {
     });
 }
 
-
 // 切换聊天环境
-let currentChat = { type: 'user', name: 'Mike Ross' }; // 示例值
-
 function switchChat(type, name) {
     currentChat = { type, name };
     document.querySelector('.contact-profile p').textContent = name;
@@ -201,33 +232,11 @@ document.getElementById("group-settings-btn").addEventListener("click", function
     window.location.href = "group_management.html";
 });
 
-
-document.addEventListener("DOMContentLoaded", () => {
-    // 绑定发送按钮点击事件
-    document.getElementById("send-message").addEventListener("click", sendMessage);
-});
-
-// 发送消息到后端
-function sendMessage() {
-    const messageContent = document.getElementById("message-input").value.trim();
-
-    if (messageContent) {
-        fetch('/send_message', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ message: messageContent })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Message sent:", data);
-            document.getElementById("message-input").value = ""; // 清空输入框
-        })
-        .catch(error => console.error('Error:', error));
-    } else {
-        alert("Please enter a message to send.");
-    }
+// 解析 CSV 数据
+function parseCSV(csvText) {
+    const parsedData = Papa.parse(csvText, {
+        header: true,
+        skipEmptyLines: true
+    });
+    return parsedData.data;
 }
-
-
