@@ -1,0 +1,43 @@
+
+/* login.css */
+
+.login-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #ecf0f1;
+}
+
+h2 {
+    font-size: 24px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+#loginForm {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#loginForm label {
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    color: #333;
+    margin-top: 10px;
+}
+
+#loginForm button {
+    margin-top: 20px;
+    background-color: #27ae60;
+    color: #fff;
+}
+
+#loginMessage {
+    color: red;
+    margin-top: 10px;
+}
