@@ -28,6 +28,12 @@ def serve_static_file(filename):
 def login():
     data = request.get_json()
     print(f"Attempting login for user: {data.get('username')}")
+    print(f'login on server: {data.get("server_ip")}:{data.get("server_port")}')
+
+    '''
+    这里写一个：发送请求到服务器，然后接受服务器的数据包。
+    '''
+
     return jsonify({"status": "success", "message": "Login successful"})
 
 
@@ -67,11 +73,11 @@ def handle_file_upload(file_type):
     # 写入消息队列
     message_record = {
         "timestamp": datetime.now().isoformat(),
-        "source": request.form.get("source"),
-        "target": request.form.get("target"),
+        "source": request.form.get("source", verify=False),  # you can open verify when put into use to increse safty.
+        "target": request.form.get("target", verify=False),
         "type": file_type,
         "content": f"./{file_path}",  # 相对路径用于前端访问
-        "message_type": request.form.get("message_type"),
+        "message_type": request.form.get("message_type", verify=False),
     }
     write_message_to_csv(message_record)
 
