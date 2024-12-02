@@ -19,15 +19,20 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("send-btn").addEventListener("click", sendMessage);
     document.getElementById("file-input").addEventListener("change", () => sendFileOrPicture("file"));
     document.getElementById("picture-input").addEventListener("change", () => sendFileOrPicture("picture"));
+
+    // Log Out button click event
+    document.getElementById("logout-btn").addEventListener("click", () => {
+        localStorage.removeItem("signed_up");
+        localStorage.removeItem("currentUserName");
+        localStorage.removeItem("serverIp");
+        window.location.href = "index.html"; // Redirect to login page
+    });
+
+    document.getElementById("group-settings-btn").addEventListener("click", () => {
+        window.location.href = "group_management.html"
+    })
 });
 
-// Log Out button click event
-document.getElementById("logout-btn").addEventListener("click", () => {
-    localStorage.removeItem("signed_up");
-    localStorage.removeItem("currentUserName");
-    localStorage.removeItem("serverIp");
-    window.location.href = "index.html"; // Redirect to login page
-});
 
 // Send message to backend
 function sendMessage() {
@@ -56,13 +61,13 @@ function sendMessage() {
         },
         body: JSON.stringify(messageData)
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log("Message sent:", data);
-        document.getElementById("message-input").value = ""; // Clear input field
-        loadMessages(); // Refresh messages
-    })
-    .catch(error => console.error('Error sending message:', error));
+        .then(response => response.json())
+        .then(data => {
+            console.log("Message sent:", data);
+            document.getElementById("message-input").value = ""; // Clear input field
+            loadMessages(); // Refresh messages
+        })
+        .catch(error => console.error('Error sending message:', error));
 }
 
 // Load user and group lists
@@ -143,7 +148,7 @@ function displayMessages(messages) {
             return (
                 currentChat.type === 'user' &&
                 ((msg.source === currentUserName && msg.target === currentChat.name) ||
-                 (msg.source === currentChat.name && msg.target === currentUserName))
+                    (msg.source === currentChat.name && msg.target === currentUserName))
             );
         } else if (msg.message_type === 'group') {
             return currentChat.type === 'group' && msg.target === currentChat.name;
@@ -244,11 +249,11 @@ function sendFileOrPicture(type) {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log(`${type.charAt(0).toUpperCase() + type.slice(1)} sent:`, data);
-        loadMessages();
-        input.value = ""; // Reset file input
-    })
-    .catch(error => console.error('Error uploading:', error));
+        .then(response => response.json())
+        .then(data => {
+            console.log(`${type.charAt(0).toUpperCase() + type.slice(1)} sent:`, data);
+            loadMessages();
+            input.value = ""; // Reset file input
+        })
+        .catch(error => console.error('Error uploading:', error));
 }

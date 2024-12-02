@@ -90,7 +90,7 @@ body {
 .contact-profile {
     margin-bottom: 20px;
     text-align: center;
-    border-bottom: 3px dashed #000;
+    border-bottom: 3px solid #000;
 }
 
 .contact-profile p {
