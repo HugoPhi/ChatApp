@@ -25,6 +25,6 @@ function loadGroupManagement() {
 }
 
 // 返回主聊天页面
-document.getElementById("back-to-chat").addEventListener("click", function() {
+document.getElementById("back-to-chat").addEventListener("click", function () {
     window.location.href = "main.html";
 });

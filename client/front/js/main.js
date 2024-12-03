@@ -7,6 +7,34 @@ let currentUserName = localStorage.getItem("currentUserName");
 let currentChat = { type: 'user', name: 'Chat Name' };
 
 // Check login status on page load
+// document.addEventListener("DOMContentLoaded", () => {
+//     if (!signed_up || !currentUserName) {
+//         window.location.href = "index.html"; // Redirect to login page if not logged in
+//     } else {
+//         loadUserGroupLists(); // Load user and group lists
+//         loadMessages();       // Load chat messages
+//     }
+//
+//     // Bind send button click event
+//     document.getElementById("send-btn").addEventListener("click", sendMessage);
+//     document.getElementById("file-input").addEventListener("change", () => sendFileOrPicture("file"));
+//     document.getElementById("picture-input").addEventListener("change", () => sendFileOrPicture("picture"));
+//
+//     // Log Out button click event
+//     document.getElementById("logout-btn").addEventListener("click", () => {
+//         localStorage.removeItem("signed_up");
+//         localStorage.removeItem("currentUserName");
+//         localStorage.removeItem("serverIp");
+//         window.location.href = "index.html"; // Redirect to login page
+//     });
+//
+//     document.getElementById("group-settings-btn").addEventListener("click", () => {
+//         window.location.href = "group_management.html"
+//     })
+// });
+
+
+// Check login status on page load
 document.addEventListener("DOMContentLoaded", () => {
     if (!signed_up || !currentUserName) {
         window.location.href = "index.html"; // Redirect to login page if not logged in
@@ -30,8 +58,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("group-settings-btn").addEventListener("click", () => {
         window.location.href = "group_management.html"
-    })
+    });
+
+    // Bind message input keydown event
+    const messageInput = document.getElementById('message-input');
+    messageInput.addEventListener('keydown', (event) => {
+        // Check if Enter key is pressed and Shift key is not pressed
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault(); // Prevent default behavior (i.e., not submit form)
+            sendMessage(); // Trigger send message function
+        } else if (event.key === 'Enter' && event.shiftKey) {
+            event.preventDefault(); // Prevent default behavior (i.e., not submit form)
+            // Insert newline character
+            const start = messageInput.selectionStart;
+            const end = messageInput.selectionEnd;
+            messageInput.value = messageInput.value.substring(0, start) + '\n' + messageInput.value.substring(end);
+            messageInput.selectionStart = start + 1;
+            messageInput.selectionEnd = start + 1;
+        }
+    });
 });
+
 
 
 // Send message to backend
@@ -193,7 +240,7 @@ function displayMessages(messages) {
             const image = document.createElement('img');
             image.src = `data/picture/${msg.content}`;
             image.alt = `Image: ${imageName}`;
-            image.style.maxWidth = "200px";
+            image.style.maxWidth = "700px";
 
             messageContent.appendChild(imageLink);
             messageContent.appendChild(document.createElement('br'));
