@@ -12,28 +12,17 @@
     <script src="js/main.js"></script>
   </head>
   <body>
+    <button id="group-settings-btn" class="group-button">
+      <i class="fas fa-cog"></i> Group Management
+    </button>
     <!-- Log Out 按钮 -->
     <button id="logout-btn" class="logout-button">󰗽 LogOut</button>
 
     <!-- 聊天界面 -->
     <div id="frame">
-      <!-- 左侧用户和群组列表 -->
       <div id="sidepanel">
-        <!-- 在线用户列表 -->
-        <div id="users-list">
-          <h3>👤 Online Users</h3>
-          <ul id="users"></ul>
-        </div>
-        <!-- 群组列表 -->
-        <div id="groups-list">
-          <h3>
-            👥 Groups
-            <button id="group-settings-btn" title="Manage Groups">
-              <i class="fas fa-cog"></i>
-            </button>
-          </h3>
-          <ul id="groups"></ul>
-        </div>
+        <div id="users-list" style="white-space: pre;"><ul id="users"></ul></div>
+        <div id="groups-list" style="white-space: pre;"><ul id="groups"></ul></div>
       </div>
 
       <!-- 右侧聊天内容 -->
@@ -48,6 +37,10 @@
         <!-- 输入框和发送按钮 -->
         <div class="message-input">
           <div class="wrap">
+            <!-- 发送按钮 -->
+            <button id="send-btn" class="submit">
+              <i class="fa fa-paper-plane" aria-hidden="true"></i>
+            </button>
             <textarea
               id="message-input"
               placeholder="Write your message..."
@@ -76,11 +69,6 @@
               accept="image/*"
               style="display: none"
             />
-
-            <!-- 发送按钮 -->
-            <button id="send-btn" class="submit">
-              <i class="fa fa-paper-plane" aria-hidden="true"></i>
-            </button>
           </div>
         </div>
       </div>

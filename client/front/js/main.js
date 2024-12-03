@@ -1,38 +1,9 @@
-
 // From localStorage, retrieve login status and username
 let signed_up = localStorage.getItem("signed_up") === "true";
 let currentUserName = localStorage.getItem("currentUserName");
 
 // Current chat environment (default example)
 let currentChat = { type: 'user', name: 'Chat Name' };
-
-// Check login status on page load
-// document.addEventListener("DOMContentLoaded", () => {
-//     if (!signed_up || !currentUserName) {
-//         window.location.href = "index.html"; // Redirect to login page if not logged in
-//     } else {
-//         loadUserGroupLists(); // Load user and group lists
-//         loadMessages();       // Load chat messages
-//     }
-//
-//     // Bind send button click event
-//     document.getElementById("send-btn").addEventListener("click", sendMessage);
-//     document.getElementById("file-input").addEventListener("change", () => sendFileOrPicture("file"));
-//     document.getElementById("picture-input").addEventListener("change", () => sendFileOrPicture("picture"));
-//
-//     // Log Out button click event
-//     document.getElementById("logout-btn").addEventListener("click", () => {
-//         localStorage.removeItem("signed_up");
-//         localStorage.removeItem("currentUserName");
-//         localStorage.removeItem("serverIp");
-//         window.location.href = "index.html"; // Redirect to login page
-//     });
-//
-//     document.getElementById("group-settings-btn").addEventListener("click", () => {
-//         window.location.href = "group_management.html"
-//     })
-// });
-
 
 // Check login status on page load
 document.addEventListener("DOMContentLoaded", () => {
@@ -80,7 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-
 // Send message to backend
 function sendMessage() {
     const messageContent = document.getElementById("message-input").value.trim();
@@ -89,7 +59,7 @@ function sendMessage() {
         return;
     }
 
-    // Prepare data to send
+    // 数据包
     const messageData = {
         source: currentUserName,
         target: currentChat.name,
@@ -142,17 +112,27 @@ function displayUserList(users) {
     usersList.innerHTML = '';
 
     const currentUserLi = document.createElement('li');
-    currentUserLi.textContent = currentUserName;
+    if (currentUserName === currentChat.name) {
+        currentUserLi.textContent = "  I'm " + currentUserName;
+    } else {
+        currentUserLi.textContent = "  I'm " + currentUserName;
+    }
     currentUserLi.classList.add('current-user');
+    currentUserLi.addEventListener('click', () => switchChat('user', currentUserName));  // 可点击自己
     usersList.appendChild(currentUserLi);
 
     users.forEach(user => {
+        // let currentChat = { type: 'user', name: 'Chat Name' };
         if (user.name !== currentUserName) {
             const li = document.createElement('li');
-            li.textContent = user.name;
+            if (user.name === currentChat.name) {
+                li.textContent = "   " + user.name + "   ";
+            } else {
+                li.textContent = "   " + user.name;
+            }
             li.addEventListener('click', () => switchChat('user', user.name));
             usersList.appendChild(li);
-        }
+        }  // 这里过滤掉了当前用户
     });
 }
 
@@ -163,7 +143,19 @@ function displayGroupList(groups) {
 
     groups.forEach(group => {
         const li = document.createElement('li');
-        li.textContent = group.name;
+        if (group.name === currentChat.name) {
+            if (group.created_by_user === "true") {
+                li.textContent = "   " + group.name + "   ";
+            } else {
+                li.textContent = "   " + group.name + "   ";
+            }
+        } else {
+            if (group.created_by_user === "true") {
+                li.textContent = "   " + group.name;
+            } else {
+                li.textContent = "   " + group.name;
+            }
+        }
 
         if (group.created_by_user === 'true') {
             li.classList.add('user-created-group');
@@ -240,7 +232,7 @@ function displayMessages(messages) {
             const image = document.createElement('img');
             image.src = `data/picture/${msg.content}`;
             image.alt = `Image: ${imageName}`;
-            image.style.maxWidth = "700px";
+            image.style.maxWidth = "700px";  // 图片最大宽度
 
             messageContent.appendChild(imageLink);
             messageContent.appendChild(document.createElement('br'));
@@ -265,6 +257,7 @@ function displayMessages(messages) {
 function switchChat(type, name) {
     currentChat = { type, name };
     document.querySelector('.contact-profile p').textContent = name;
+    loadUserGroupLists();
     loadMessages();
 }
 
