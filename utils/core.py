@@ -311,6 +311,7 @@ class FullDuplex:
                     4 - Command: FullDuplex.ProtocalHead.CMD
                 'source' (str):
                     The sender's nickname or group name.
+                    ! Or 'Server': to emit the CMD to update user_table & group_table of client. Sent two files.
                 'target' (str):
                     The receiver's nickname or group name.
                 'timestamp' (str):
@@ -512,4 +513,7 @@ class FullDuplex:
         """Stop the communication and close the socket."""
 
         self.running = False
+        self.interface_socket.close()
+
+    def __del__(self):
         self.interface_socket.close()

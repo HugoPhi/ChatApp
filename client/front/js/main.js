@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
         loadUserGroupLists(); // Load user and group lists
         loadMessages();       // Load chat messages
+        switchChat('user', currentUserName);
     }
 
     // Bind send button click event
@@ -251,6 +252,14 @@ function displayMessages(messages) {
 
         chatBox.appendChild(li);
     });
+
+    setTimeout(() => {
+        const container = document.querySelector('.messages');
+        container.scrollTo({
+            top: container.scrollHeight,
+            behavior: 'smooth'
+        });
+    }, 0);
 }
 
 // Switch chat
