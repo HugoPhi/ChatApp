@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+    <link rel="stylesheet" href="css/login.css" />
+    <script defer src="js/login.js"></script>
+  </head>
+  <body>
+    <div class="login-screen">
+      <h2>󰍂 Login</h2>
+      <form id="loginForm">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          required
+          placeholder="Enter your username, < 50"
+        />
+
+        <label for="serverIp">Server IP</label>
+        <input
+          type="text"
+          id="serverIp"
+          required
+          placeholder="Enter server IP"
+        />
+
+        <label for="serverPort">Server Port</label>
+        <input
+          type="text"
+          id="serverPort"
+          required
+          placeholder="Enter server port"
+        />
+
+        <button type="submit">Sign In</button>
+      </form>
+      <p id="loginMessage"></p>
+    </div>
+  </body>
+</html>
