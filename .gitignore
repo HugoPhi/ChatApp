@@ -166,13 +166,13 @@ cython_debug/
 __*/
 
 # 3. 忽略 ./client/data
-/client/data/
+/src/client/data/
 
 # 4. 忽略 ./server/data
-/server/data/
+/src/server/data/
 
 # 5. 忽略 ./server/server_data
-/server/server_data/
+/src/server/server_data/
 
 # 6. 忽略 ./client/front/data
-/client/front/data/
+/src/client/front/data/
