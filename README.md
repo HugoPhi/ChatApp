@@ -4,6 +4,16 @@
 
 ![show](./assets/show.gif)
 
+## 框架
+
+### 整体框架
+
+![整体](./doc/整体框架.png)
+
+### 细化框架
+
+![细化](./doc/细化框架.png)
+
 ## TODO
 
 TODO List:
