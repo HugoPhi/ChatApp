@@ -1,5 +1,11 @@
 # ChatApp
 
+## 展示
+
+![show](./assets/show.gif)
+
+## TODO
+
 TODO List:
 
 ```cpp
