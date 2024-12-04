@@ -160,3 +160,19 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+
+# 2. 忽略所有以 __ 开头的文件夹
+__*/
+
+# 3. 忽略 ./client/data
+/client/data/
+
+# 4. 忽略 ./server/data
+/server/data/
+
+# 5. 忽略 ./server/server_data
+/server/server_data/
+
+# 6. 忽略 ./client/front/data
+/client/front/data/

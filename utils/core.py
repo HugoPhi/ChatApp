@@ -202,6 +202,20 @@ class FullDuplex:
 
                     # 保存文件
                     save_path = os.path.join(self.files_dir, file_name)
+                    print(save_path)
+
+                    # 如果存在文件保存为(i)
+                    name, suffix = os.path.splitext(file_name)  # (get name with path, suffix)
+                    MAX_SAME_FILES = 100
+                    for i in range(1, MAX_SAME_FILES + 1):  # 最多处理100个同名文件
+                        if not os.path.exists(save_path):
+                            break
+                        else:
+                            save_path = os.path.join(self.files_dir, f"{name}({i}){suffix}")
+                    if i == MAX_SAME_FILES:
+                        raise Exception(f"[E001] too much files with same name:{self.files_dir}{file_name} (over 100)!")
+
+                    print(save_path)
                     if not os.path.exists(os.path.dirname(save_path)):
                         os.makedirs(os.path.dirname(save_path))
                     with open(save_path, 'wb') as f:
@@ -235,6 +249,18 @@ class FullDuplex:
 
                     # 保存图片
                     save_path = os.path.join(self.imgs_dir, file_name)
+
+                    # 如果存在文件保存为(i)
+                    name, suffix = os.path.splitext(file_name)  # (get name with path, suffix)
+                    MAX_SAME_FILES = 100
+                    for i in range(MAX_SAME_FILES):  # 最多处理100个同名文件
+                        if not os.path.exists(save_path):
+                            break
+                        else:
+                            save_path = f"{name}({i}){suffix}"
+                    if i == MAX_SAME_FILES - 1:
+                        raise Exception(f"[E001] too much files with same name:{self.imgs_dir}{file_name} (over 100)!")
+
                     if not os.path.exists(os.path.dirname(save_path)):
                         os.makedirs(os.path.dirname(save_path))
                     with open(save_path, 'wb') as f:
@@ -254,11 +280,11 @@ class FullDuplex:
                 elif data_type == FullDuplex.ProtocalHead.CMD:
                     # 接收命令
                     # TODO: #1 改成枚举类，固定命令种类
-                    command_len = int.from_bytes(self.interface_socket.recv(2), 'big')  # 2字节表示命令长度
+                    command_len = int.from_bytes(self.interface_socket.recv(1), 'big')  # 1字节表示命令长度
                     command = self.interface_socket.recv(command_len).decode()  # 接收命令
 
                     args = []
-                    args_len = int.from_bytes(self.interface_socket.recv(2), 'big')  # 2字节表示参数长度
+                    args_len = int.from_bytes(self.interface_socket.recv(1), 'big')  # 1字节表示参数列表长度
                     while args_len > 0:
                         args_len -= 1
                         arg_len = int.from_bytes(self.interface_socket.recv(1), 'big')  # 1字节表示参数长度
@@ -281,11 +307,10 @@ class FullDuplex:
                         print(f"[*]  Received command: {command} with args: {args}")
 
                 else:
-                    # pass
-                    print(f"[!] Unknown data type received: {data_type}")
+                    print(f"[E002] Unknown data type received: {data_type}")
 
         except Exception as e:
-            print(f"[!] Error receiving message: {e}")
+            print(f"[E003] Error receiving message: {e}")
         finally:
             self.stop()
             print(f"[*] 󰩈 Connection closed with {self.peer[0]}:{self.peer[1]}")
@@ -398,7 +423,7 @@ class FullDuplex:
 
         try:
             if self.interface_socket.fileno() == -1:  # 检查套接字是否已经关闭
-                print("[!] Cannot send message, socket is closed.")
+                print("[E004] Cannot send message, socket is closed.")
                 return
 
             message_type = message_dict.get('type')
@@ -425,7 +450,7 @@ class FullDuplex:
                 # 发送文本消息
                 text_data = message_dict.get('content')
                 if not isinstance(text_data, str):
-                    raise ValueError("[!] Text message content must be a string.")
+                    raise ValueError("[E005] Text message content must be a string.")
                 text_len = len(text_data)
                 self.interface_socket.send(text_len.to_bytes(4, 'big'))  # 发送字符串长度
                 self.interface_socket.send(text_data.encode())  # 发送文本内容
@@ -436,12 +461,12 @@ class FullDuplex:
                 # 发送文件或图片
                 file_info = message_dict.get('content')
                 if not isinstance(file_info, dict):
-                    raise ValueError("[!] File content must be a dictionary with 'file_name' and 'file_path'.")
+                    raise ValueError("[E006] File content must be a dictionary with 'file_name' and 'file_path'.")
                 file_name = file_info.get('file_name')
                 file_path = file_info.get('file_path')
 
                 if not file_name or not file_path or not os.path.exists(file_path):
-                    raise ValueError("[!] Invalid file path or file name.")
+                    raise ValueError("[E007] Invalid file path or file name.")
 
                 file_size = os.path.getsize(file_path)
                 file_name_len = len(file_name)
@@ -469,29 +494,28 @@ class FullDuplex:
                 # 发送命令
                 cmd_info = message_dict.get('content')
                 if not isinstance(cmd_info, dict):
-                    raise ValueError("[!] Command content must be a dictionary with 'command' and 'args'.")
-                command = cmd_info.get('command')
+                    raise ValueError("[E008] Command content must be a dictionary with 'command' and 'args'.")
+                command = cmd_info.get('cmd')
                 args = cmd_info.get('args')
 
                 if not command:
-                    raise ValueError("[!] Command is required.")
+                    raise ValueError("[E009] Command is required.")
 
                 command_len = len(command)
                 # TODO: #1 改成枚举，固定命令种类，变成静态属性
                 self.interface_socket.send(command_len.to_bytes(1, 'big'))  # 发送命令长度
                 self.interface_socket.send(command.encode())  # 发送命令
 
-                self.interface_socket.send(len(args).to_bytes(1, 'big'))  # 发送参数长度
-                if args:
-                    args_len = len(args)
-                    self.interface_socket.send(args_len.to_bytes(1, 'big'))  # 发送参数长度
-                    self.interface_socket.send(args.encode())  # 发送参数
+                self.interface_socket.send(len(args).to_bytes(1, 'big'))  # 发送参数列表长度
+                for arg in args:
+                    self.interface_socket.send(len(arg).to_bytes(1, 'big'))  # 发送参数长度数
+                    self.interface_socket.send(arg.encode())  # 发送参数
 
                 if self.debug:
                     print(f"[*]  Sent command: {command}")
 
             else:
-                raise ValueError("[!] Unsupported message type.")
+                raise ValueError("[E010] Unsupported message type.")
 
         except Exception as e:
             print(f"[!] Error sending message: {e}")

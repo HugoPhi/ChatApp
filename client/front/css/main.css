@@ -9,13 +9,12 @@ body {
   flex-direction: column;
 }
 
-/* 设置左侧和右侧区域 */
+/* 左右区域布局 */
 #frame {
   display: flex;
   height: 100%;
 }
 
-/* 左侧区域 */
 #sidepanel {
   width: 350px;
   background: #ecf0f1;
@@ -27,7 +26,6 @@ body {
   border-right: 2px solid #000;
 }
 
-/* 在线用户和群组标题 */
 #users-list h3,
 #groups-list h3 {
   color: #333;
@@ -39,10 +37,9 @@ body {
   padding-bottom: 10px;
 }
 
-/* 用户和群组列表 */
 #users,
 #groups {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
 }
 
@@ -50,34 +47,33 @@ body {
 #groups li {
   padding: 15px;
   margin-bottom: 1px;
-  /* background: #d1e8ff; */
   background: #ebebeb;
-  border-radius: 0px;
   text-align: left;
   cursor: pointer;
-  font-size: 20px;
-  font-weight: bold;
-  font-family: "VictorMono Nerd Font", "Noto Serif SC";
+  font:
+    bold 20px "VictorMono Nerd Font",
+    "Noto Serif SC";
   color: #333;
+  transition:
+    transform 0.3s ease,
+    background 0.3s ease;
 }
 
 #users li:hover,
 #groups li:hover {
-  /* background: #b3d4ff; */
   background: #d1d1d1;
+  transform: scale(1.05);
 }
 
-/* 当前用户样式 */
 .current-user {
-  /* background-color: #d4edda !important; */
   background-color: #dcddd2 !important;
   text-align: center !important;
-  color: #155724 !important; /* 深绿色文字 */
+  color: #155724 !important;
   font-weight: bold !important;
 }
 
 .current-user:hover {
-  background: #dcdddf !important;
+  background: #d8d2c8 !important;
 }
 
 .content {
@@ -95,10 +91,9 @@ body {
 }
 
 .contact-profile p {
-  font-size: 24px;
-  font-family: "Manjari", "Noto Serif SC";
-  font-style: bold;
-  font-weight: 300;
+  font:
+    300 24px "Manjari",
+    "Noto Serif SC";
   color: #2c3e50;
 }
 
@@ -114,19 +109,20 @@ body {
   padding: 10px;
 }
 
-/* 左右对齐样式 */
-.sent {
+.sent,
+.replies {
   display: flex;
-  justify-content: flex-end; /* 靠右显示 */
-  text-align: right;
   margin-bottom: 15px;
 }
 
+.sent {
+  justify-content: flex-end;
+  text-align: right;
+}
+
 .replies {
-  display: flex;
-  justify-content: flex-start; /* 靠左显示 */
+  justify-content: flex-start;
   text-align: left;
-  margin-bottom: 15px;
 }
 
 .sent p,
@@ -134,17 +130,17 @@ body {
   padding: 10px;
   border-radius: 8px;
   max-width: 60%;
-  word-wrap: break-word; /* 自动换行 */
+  word-wrap: break-word;
   margin: 0;
 }
 
 .sent p {
-  background-color: #c3d5c6; /* 自己的消息颜色 */
+  background-color: #c3d5c6;
   color: #0c5460;
 }
 
 .replies p {
-  background-color: #c3cbd5; /* 对方的消息颜色 */
+  background-color: #c3cbd5;
   color: #333;
 }
 
@@ -158,23 +154,21 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
-  font-weight: bold;
+  font: bold 18px;
   margin-right: 10px;
 }
 
 .sent .avatar {
-  order: 2; /* 将头像放在右侧 */
-  margin-left: 10px;
-  margin-right: 0;
+  order: 2;
+  margin: 0 0 0 10px;
 }
 
-/* 消息时间和用户名样式 */
+/* 消息时间和用户名 */
 .messages ul li small {
   font-size: 12px;
   color: #888;
   display: block;
-  margin: 5px 0 0;
+  margin-top: 5px;
 }
 
 /* 输入框 */
@@ -183,7 +177,6 @@ body {
   align-items: center;
   padding: 10px;
   background: #ecf0f1;
-  /* border-top: 1px solid #111; */
   width: auto;
 }
 
@@ -195,102 +188,92 @@ body {
 
 .message-input textarea {
   width: 80%;
-  height: 35px;
+  height: 25px;
   padding: 10px;
+  border: 1px solid #ddd;
   border-radius: 30px;
-  border: 1px solid #111;
-  margin-right: 20px;
-  margin-left: 20px;
+  margin: 0 20px;
   background-color: #fff;
-  font-family: "Manjari", "Noto Serif SC";
-  font-size: 20px;
+  font:
+    20px "Manjari",
+    "Noto Serif SC";
+  transition:
+    border-radius 0.3s,
+    height 0.3s,
+    width 0.3s;
 }
 
-.message-input button {
+.message-input textarea:hover,
+.message-input textarea:focus {
+  height: 80px;
+  border-radius: 10px;
+}
+
+.message-input button,
+.message-input .submit {
   background-color: #27ae60;
   border: none;
-  padding: 10px;
-  border-radius: 5px;
+  padding: 10px 30px;
+  border-radius: 30px;
   color: white;
-  font-size: 16px;
-  margin-left: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
-/* 文件上传按钮样式 */
+.message-input button:hover,
+.message-input .submit:hover {
+  background-color: #1e8449;
+  border-radius: 10px;
+  padding: 10px 35px;
+}
+
 .message-input .attachment {
   font-size: 20px;
-  margin-right: 10px;
   color: #27ae60;
+  cursor: pointer;
+  margin-right: 10px;
 }
 
-/* Log Out 按钮样式 */
-.logout-button {
+.message-input .attachment:hover {
+  color: #1e8449;
+}
+
+/* 按钮样式 */
+.logout-button,
+.group-button {
   position: absolute;
-  top: 20px;
-  right: 20px;
   padding: 10px 20px;
-  background-color: #e74c3c;
-  color: white;
   border: none;
   border-radius: 30px;
-  font-family: "CodeNewRoman Nerd Font", "Noto Serif SC";
   cursor: pointer;
   font-size: 20px;
+  transition: all 0.3s;
+}
+
+.logout-button {
+  top: 12px;
+  right: 20px;
+  background-color: #e74c3c;
+  color: white;
+  font-family: "VictorMono Nerd Font";
 }
 
 .logout-button:hover {
   background-color: #c0392b;
+  padding: 10px 25px;
+  border-radius: 10px;
 }
 
-/* 群组管理按钮样式 */
 .group-button {
-  position: absolute;
   top: 18px;
   left: 410px;
-  color: #000; /* 白色文字 */
   background-color: #ecf0f1;
-  border: 0px solid #555; /* 边框颜色 */
-  padding: 10px 20px; /* 增加按钮的内边距 */
-  border-radius: 30px; /* 边框圆角 */
-  font-family: "TimeNewRoman", "Noto Serif SC";
-  cursor: pointer;
-  font-size: 20px; /* 字体大小 */
+  color: #000;
 }
 
 .group-button:hover {
-  color: #fff; /* 白色文字 */
   background-color: #444;
-}
-
-/* .group-button i { */
-/*   font-size: 20px; /* 图标大小 */
-/* } */
-
-/* 发送按钮样式 */
-.message-input .submit {
-  background-color: #27ae60; /* 按钮默认背景色 */
-  color: white;
-  padding-left: 30px;
-  border-radius: 30px;
-  padding-right: 30px;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-.message-input .submit:hover {
-  background-color: #1e8449; /* 悬停时背景色 */
-}
-
-/* 文件上传按钮样式 */
-.message-input .attachment {
-  font-size: 20px;
-  padding-left: 0px;
-  padding-right: 10px;
-  margin-right: 10px;
-  color: #27ae60; /* 默认图标颜色 */
-  cursor: pointer;
-}
-
-.message-input .attachment:hover {
-  color: #1e8449; /* 悬停时图标颜色 */
+  color: #fff;
+  border-radius: 10px;
 }

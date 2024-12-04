@@ -145,20 +145,20 @@ function displayGroupList(groups) {
     groups.forEach(group => {
         const li = document.createElement('li');
         if (group.name === currentChat.name) {
-            if (group.created_by_user === "true") {
+            if (group.owner === currentUserName) {
                 li.textContent = "   " + group.name + "   ";
             } else {
                 li.textContent = "   " + group.name + "   ";
             }
         } else {
-            if (group.created_by_user === "true") {
+            if (group.owner === currentUserName) {
                 li.textContent = "   " + group.name;
             } else {
                 li.textContent = "   " + group.name;
             }
         }
 
-        if (group.created_by_user === 'true') {
+        if (group.owner === currentUserName) {
             li.classList.add('user-created-group');
         }
 
