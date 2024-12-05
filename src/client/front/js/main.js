@@ -146,13 +146,13 @@ function displayGroupList(groups) {
         const li = document.createElement('li');
         if (group.name === currentChat.name) {
             if (group.owner === currentUserName) {
-                li.textContent = "   " + group.name + "   ";
+                li.textContent = "   " + group.name + "   ";
             } else {
                 li.textContent = "   " + group.name + "   ";
             }
         } else {
             if (group.owner === currentUserName) {
-                li.textContent = "   " + group.name;
+                li.textContent = "   " + group.name;
             } else {
                 li.textContent = "   " + group.name;
             }

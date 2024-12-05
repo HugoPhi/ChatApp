@@ -18,7 +18,7 @@ body {
 #sidepanel {
   width: 350px;
   background: #ecf0f1;
-  background-image: url("../assets/3.png");
+  background-image: url("../assets/pictures/3.png");
   background-size: cover;
   color: #333;
   overflow-y: auto;
@@ -51,7 +51,7 @@ body {
   text-align: left;
   cursor: pointer;
   font:
-    bold 20px "VictorMono Nerd Font",
+    bold 20px "Nerd Font",
     "Noto Serif SC";
   color: #333;
   transition:
@@ -66,6 +66,7 @@ body {
 }
 
 .current-user {
+  font-family: "Nerd Font";
   background-color: #dcddd2 !important;
   text-align: center !important;
   color: #155724 !important;
@@ -99,7 +100,7 @@ body {
 
 /* 消息区域 */
 .messages {
-  background-image: url("../assets/1.svg");
+  background-image: url("../assets/pictures/1.svg");
   background-size: contain;
   background-position: center; /* 背景图片居中显示 */
   background-repeat: no-repeat; /* 背景图片不重复 */
@@ -212,6 +213,7 @@ body {
 .message-input button,
 .message-input .submit {
   background-color: #27ae60;
+  font-family: "Nerd Font";
   border: none;
   padding: 10px 30px;
   border-radius: 30px;
@@ -230,8 +232,10 @@ body {
 
 .message-input .attachment {
   font-size: 20px;
+  font-family: "Nerd Font";
   color: #27ae60;
   cursor: pointer;
+  padding-right: 10px;
   margin-right: 10px;
 }
 
@@ -252,11 +256,11 @@ body {
 }
 
 .logout-button {
-  top: 12px;
+  top: 20px;
   right: 20px;
   background-color: #e74c3c;
   color: white;
-  font-family: "VictorMono Nerd Font";
+  font-family: "Nerd Font";
 }
 
 .logout-button:hover {
@@ -268,6 +272,8 @@ body {
 .group-button {
   top: 18px;
   left: 410px;
+  font-family: "Nerd Font";
+  font-size: 20px;
   background-color: #ecf0f1;
   color: #000;
 }
