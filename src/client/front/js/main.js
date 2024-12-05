@@ -233,7 +233,7 @@ function displayMessages(messages) {
             const image = document.createElement('img');
             image.src = `data/picture/${msg.content}`;
             image.alt = `Image: ${imageName}`;
-            image.style.maxWidth = "700px";  // 图片最大宽度
+            image.style.maxWidth = "600px";  // 图片最大宽度
 
             messageContent.appendChild(imageLink);
             messageContent.appendChild(document.createElement('br'));

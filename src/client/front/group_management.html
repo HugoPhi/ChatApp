@@ -9,14 +9,131 @@
   <body>
     <h1>Group Management</h1>
     <div id="group-management-content">
-      <p>Manage your groups here.</p>
-      <!-- 在此处添加群组管理功能，如增删改查 -->
-    </div>
-    <button id="back-to-chat">Back to Chat</button>
-    <button id="new">New</button>
-    <button id="mod">Modify</button>
-    <button id="delete">Back to Chat</button>
+      <div id="group-actions">
+        <button id="join">󰠜 Join</button>
+        <button id="new">󰠛 Create</button>
+        <button id="back-to-chat"> Go Back</button>
+      </div>
 
+      <div id="group-list">
+        <h2>Available Groups</h2>
+        <!-- 搜索群组 -->
+        <div id="search-container">
+          <input type="text" id="group-search" placeholder="Search Groups..." />
+          <button id="search-button" class="btn-search">Search</button>
+          <button id="reset-search-button" class="btn-reset">Reset</button>
+        </div>
+        <ul id="groups-ul">
+          <!-- 群组列表将动态填充 -->
+        </ul>
+      </div>
+
+      <!-- 创建群组表单 -->
+      <div id="create-group-form" class="modal hidden">
+        <h3>Create New Group</h3>
+        <form id="create-group">
+          <label for="group-name">Group Name:</label>
+          <input type="text" id="group-name" name="group-name" required />
+
+          <label for="group-password"
+            >Password (leave blank for public group):</label
+          >
+          <input type="password" id="group-password" name="group-password" />
+
+          <button type="submit" class="btn-create">Create</button>
+          <button type="button" id="cancel-create" class="btn-cancel">
+            Cancel
+          </button>
+        </form>
+      </div>
+
+      <!-- 加入群组表单 -->
+      <div id="join-group-form" class="modal hidden">
+        <h3>Join Group</h3>
+        <form id="join-group">
+          <label for="join-group-name">Group Name:</label>
+          <input
+            type="text"
+            id="join-group-name"
+            name="join-group-name"
+            required
+          />
+
+          <label for="join-group-password">Password:</label>
+          <input
+            type="password"
+            id="join-group-password"
+            name="join-group-password"
+          />
+
+          <button type="submit" class="btn-join">Join</button>
+          <button type="button" id="cancel-join" class="btn-cancel">
+            Cancel
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Quit Group Modal -->
+    <div id="quit-group-form" class="modal hidden">
+      <h3>Quit Group</h3>
+      <form id="quit-group">
+        <input type="hidden" id="quit-group-name" name="quit-group-name" />
+        <p>
+          Are you sure you want to quit the group "<span
+            id="quit-group-display-name"
+          ></span
+          >"?
+        </p>
+        <button type="submit" class="btn-quit">Quit</button>
+        <button type="button" id="cancel-quit" class="btn-cancel">
+          Cancel
+        </button>
+      </form>
+    </div>
+
+    <!-- Delete Group Modal -->
+    <div id="delete-group-form" class="modal hidden">
+      <h3>Delete Group</h3>
+      <form id="delete-group">
+        <input type="hidden" id="delete-group-name" name="delete-group-name" />
+        <p>
+          Are you sure to delete the group "<span
+            id="delete-group-display-name"
+          ></span
+          >"? This action cannot be undone.
+        </p>
+        <button type="submit" class="btn-delete">Delete</button>
+        <button type="button" id="cancel-delete" class="btn-cancel">
+          Cancel
+        </button>
+      </form>
+    </div>
+
+    <!-- Transfer Ownership Modal -->
+    <div id="transfer-ownership-form" class="modal hidden">
+      <h3>Transfer Group Ownership</h3>
+      <form id="transfer-ownership">
+        <input
+          type="hidden"
+          id="transfer-group-name"
+          name="transfer-group-name"
+        />
+
+        <label for="new-owner-username">New Owner Username:</label>
+        <input
+          type="text"
+          id="new-owner-username"
+          name="new-owner-username"
+          required
+        />
+
+        <button type="submit" class="btn-transfer">Transfer Ownership</button>
+        <button type="button" id="cancel-transfer" class="btn-cancel">
+          Cancel
+        </button>
+      </form>
+    </div>
 
     <script src="js/group_management.js"></script>
   </body>
