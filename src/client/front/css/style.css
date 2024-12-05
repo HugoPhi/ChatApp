@@ -31,3 +31,21 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+/* 通用图标样式 */
+.github-icon {
+  width: 24px; /* 设置宽度 */
+  height: 24px; /* 设置高度 */
+  /* 如果使用SVG，使用fill属性 */
+  fill: #333;
+  /* 如果使用Font Awesome，使用font-size属性 */
+  /* font-size: 24px; */
+  transition:
+    fill 0.3s,
+    color 0.3s;
+}
+.github-link:hover .github-icon {
+  fill: #4078c0; /* GitHub 蓝色 */
+  /* 如果使用Font Awesome，使用color属性 */
+  /* color: #4078c0; */
+}

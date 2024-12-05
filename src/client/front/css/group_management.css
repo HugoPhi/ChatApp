@@ -7,11 +7,12 @@ body {
   align-items: center;
   justify-content: flex-start;
   height: 100vh;
-  background-color: #f4f6f9;
+  background-color: #ebebeb;
   margin: 0;
   padding: 20px;
   box-sizing: border-box;
-  font-family: "Nerd Font", "Noto Serif SC";
+  font-family: "Manjari", "Noto Serif SC";
+  font-size: 16px;
 }
 
 h1 {
@@ -24,10 +25,16 @@ h1 {
 #group-management-content {
   width: 90%;
   /* max-width: 1000px; */
-  background-color: #fff;
+  background-color: #f4f6f9;
+  /* background-image: url("../assets/pictures/1.png"); */
+  /* background-size: contain; */
+  /* background-position: center; */
+  /* background-repeat: no-repeat; */
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: "Nerd Font";
+  font-size: 24px;
 }
 
 /* 主操作按钮区域 */
@@ -96,7 +103,7 @@ h1 {
 /* 群组类型标识 */
 #groups-ul li.public::after {
   content: "Public";
-  font-family: "Nerd";
+  font-family: "Nerd Font";
   background-color: #2ecc71;
   color: white;
   padding: 1px 20px;
@@ -107,7 +114,7 @@ h1 {
 
 #groups-ul li.private::after {
   content: "Private";
-  font-family: "Nerd";
+  font-family: "Nerd Font";
   background-color: #e74c3c;
   color: white;
   padding: 1px 20px;
@@ -213,6 +220,8 @@ h1 {
   z-index: 1000;
   width: 90%;
   max-width: 400px;
+  font-family: "Manjari";
+  font-size: 16px;
 }
 
 .hidden {
@@ -240,6 +249,8 @@ h1 {
   margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  font-family: "Manjari";
+  font-size: 16px;
 }
 
 /* 模态框按钮样式 */
@@ -249,6 +260,7 @@ h1 {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-family: "Manjari";
   font-size: 16px;
   transition:
     background-color 0.1s ease,
@@ -266,4 +278,67 @@ h1 {
 .modal #cancel-join:hover {
   background-color: #7f8c8d;
   transform: scale(1.05);
+}
+
+/* 搜索输入框样式 */
+#group-search {
+  flex: 1;
+  font-family: "Nerd Font";
+  padding: 8px 20px;
+  margin-left: 50px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 25px;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
+}
+
+/* 输入框聚焦效果 */
+#group-search:hover,
+#group-search:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+}
+
+/* 输入框占位符样式 */
+#group-search::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+/* 搜索和重置按钮样式 */
+.btn-search,
+.btn-reset {
+  padding: 8px 16px;
+  margin-left: 10px;
+  font-family: "Nerd Font";
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 30px;
+  transition:
+    background-color 0.3s ease,
+    padding 0.3s ease;
+}
+
+.btn-search {
+  background-color: #4caf50; /* 绿色 */
+  color: white;
+}
+
+.btn-search:hover {
+  background-color: #45a049;
+  padding: 8px 26px;
+}
+
+.btn-reset {
+  background-color: #f44336; /* 红色 */
+  color: white;
+}
+
+.btn-reset:hover {
+  background-color: #da190b;
+  padding: 8px 26px;
 }
