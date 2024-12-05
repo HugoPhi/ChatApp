@@ -1,39 +1,344 @@
 /* group_management.css */
 
+/* 全局样式 */
 body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   height: 100vh;
-  background-color: #f4f6f9;
+  background-color: #ebebeb;
+  margin: 0;
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: "Manjari", "Noto Serif SC";
+  font-size: 16px;
 }
 
 h1 {
   color: #2c3e50;
-  font-size: 24px;
+  font-size: 36px;
   margin-bottom: 20px;
 }
 
+/* 主内容区域 */
 #group-management-content {
-  background-color: #fff;
+  width: 90%;
+  /* max-width: 1000px; */
+  background-color: #f4f6f9;
+  /* background-image: url("../assets/pictures/1.png"); */
+  /* background-size: contain; */
+  /* background-position: center; */
+  /* background-repeat: no-repeat; */
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  font-family: "Nerd Font";
+  font-size: 24px;
 }
 
-#back-to-chat {
-  margin-top: 20px;
+/* 主操作按钮区域 */
+#group-actions {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+#group-actions button {
+  margin: 0 10px;
+  width: 250px;
+  font-family: "Nerd Font";
   padding: 10px 20px;
-  background-color: #3498db;
+  background-color: #3498db; /* 默认蓝色 */
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 24px;
+  transition:
+    transform 0.1s ease,
+    background-color 0.1s ease;
+}
+
+#group-actions button:hover {
+  background-color: #2980b9;
+  transform: scale(1.05);
+}
+
+/* 群组列表区域 */
+#group-list {
+  margin-top: 20px;
+}
+
+#group-list h2 {
+  font-family: "Manjari";
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+#groups-ul {
+  list-style: none;
+  padding: 0;
+}
+
+#groups-ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 5px;
+  background-color: #ecf0f1;
+  white-space: pre;
+  border-radius: 5px;
+  transition:
+    transform 0.1s ease,
+    background-color 0.1s ease;
+}
+
+#groups-ul li:hover {
+  background-color: #bdc3c7;
+  transform: scale(1.02);
+}
+
+/* 群组类型标识 */
+#groups-ul li.public::after {
+  content: "Public";
+  font-family: "Nerd Font";
+  background-color: #2ecc71;
+  color: white;
+  padding: 1px 20px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-left: 10px;
+}
+
+#groups-ul li.private::after {
+  content: "Private";
+  font-family: "Nerd Font";
+  background-color: #e74c3c;
+  color: white;
+  padding: 1px 20px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-left: 10px;
+}
+
+/* 群组操作按钮容器 */
+.group-actions {
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  gap: 10px; /* 按钮之间的间距 */
+}
+
+/* 群组操作按钮基础样式 */
+.group-actions button {
+  font-family: "Manjari";
+  padding: 5px 10px;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 16px;
+  transition:
+    background-color 0.1s ease,
+    transform 0.1s ease;
+}
+
+/* 特定操作按钮样式 */
+
+/* 删除按钮样式 */
+.btn-delete {
+  background-color: #e74c3c; /* 红色 */
+}
+
+.btn-delete:hover {
+  background-color: #c0392b;
+  transform: scale(1.05);
+}
+
+/* 转移所有权按钮样式 */
+.btn-transfer {
+  background-color: #f1c40f; /* 黄色 */
+}
+
+.btn-transfer:hover {
+  background-color: #d4ac0d;
+  transform: scale(1.05);
+}
+
+/* 退出按钮样式 */
+.btn-quit {
+  background-color: #3498db; /* 蓝色 */
+}
+
+.btn-quit:hover {
+  background-color: #2980b9;
+  transform: scale(1.05);
+}
+
+/* 加入按钮样式 */
+.btn-join {
+  background-color: #2ecc71; /* 绿色 */
+}
+
+.btn-join:hover {
+  background-color: #27ae60;
+  transform: scale(1.05);
+}
+
+/* 创建群组表单按钮样式 */
+.btn-create {
+  background-color: #3498db; /* 蓝色 */
+}
+
+.btn-create:hover {
+  background-color: #2980b9;
+  transform: scale(1.05);
+}
+
+/* 取消按钮样式（用于模态框） */
+.btn-cancel {
+  background-color: #95a5a6; /* 灰色 */
+}
+
+.btn-cancel:hover {
+  background-color: #7f8c8d;
+  transform: scale(1.05);
+}
+
+/* 模态框样式 */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  width: 90%;
+  max-width: 400px;
+  font-family: "Manjari";
   font-size: 16px;
 }
 
-#back-to-chat:hover {
-  background-color: #2980b9;
+.hidden {
+  display: none;
+}
+
+.modal h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+.modal form {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.modal input {
+  padding: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: "Manjari";
+  font-size: 16px;
+}
+
+/* 模态框按钮样式 */
+.modal button {
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: "Manjari";
+  font-size: 16px;
+  transition:
+    background-color 0.1s ease,
+    transform 0.1s ease;
+}
+
+/* 特定模态框取消按钮 */
+.modal #cancel-create,
+.modal #cancel-join {
+  /* 继承自 .btn-cancel 类 */
+  background-color: #95a5a6; /* 灰色 */
+}
+
+.modal #cancel-create:hover,
+.modal #cancel-join:hover {
+  background-color: #7f8c8d;
+  transform: scale(1.05);
+}
+
+/* 搜索输入框样式 */
+#group-search {
+  flex: 1;
+  font-family: "Nerd Font";
+  padding: 8px 20px;
+  margin-left: 50px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 25px;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
+}
+
+/* 输入框聚焦效果 */
+#group-search:hover,
+#group-search:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+}
+
+/* 输入框占位符样式 */
+#group-search::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+/* 搜索和重置按钮样式 */
+.btn-search,
+.btn-reset {
+  padding: 8px 16px;
+  margin-left: 10px;
+  font-family: "Nerd Font";
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 30px;
+  transition:
+    background-color 0.3s ease,
+    padding 0.3s ease;
+}
+
+.btn-search {
+  background-color: #4caf50; /* 绿色 */
+  color: white;
+}
+
+.btn-search:hover {
+  background-color: #45a049;
+  padding: 8px 26px;
+}
+
+.btn-reset {
+  background-color: #f44336; /* 红色 */
+  color: white;
+}
+
+.btn-reset:hover {
+  background-color: #da190b;
+  padding: 8px 26px;
 }

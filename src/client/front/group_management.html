@@ -7,17 +7,172 @@
     <link rel="stylesheet" href="css/group_management.css" />
   </head>
   <body>
-    <h1>Group Management</h1>
+    <h1>⚙️ Group Management</h1>
     <div id="group-management-content">
-      <p>Manage your groups here.</p>
-      <!-- 在此处添加群组管理功能，如增删改查 -->
-    </div>
-    <button id="back-to-chat">Back to Chat</button>
-    <button id="new">New</button>
-    <button id="mod">Modify</button>
-    <button id="delete">Back to Chat</button>
+      <div id="group-actions">
+        <button id="join">󰠜 Join</button>
+        <button id="new">󰠛 Create</button>
+        <button id="back-to-chat"> Go Back</button>
+      </div>
 
+      <div id="group-list">
+        <h2>🔥 Available Groups</h2>
+        <!-- 搜索群组 -->
+        <div id="search-container">
+          <input type="text" id="group-search" placeholder="Search Groups..." />
+          <button id="search-button" class="btn-search"> Search</button>
+          <button id="reset-search-button" class="btn-reset">󰑙 Reset</button>
+        </div>
+        <ul id="groups-ul">
+          <!-- 群组列表将动态填充 -->
+        </ul>
+      </div>
+
+      <!-- 创建群组表单 -->
+      <div id="create-group-form" class="modal hidden">
+        <h3>Create New Group</h3>
+        <form id="create-group">
+          <label for="group-name">Group Name:</label>
+          <input type="text" id="group-name" name="group-name" required />
+
+          <label for="group-password"
+            >Password (leave blank for public group):</label
+          >
+          <input type="password" id="group-password" name="group-password" />
+
+          <button type="submit" class="btn-create">Create</button>
+          <button type="button" id="cancel-create" class="btn-cancel">
+            Cancel
+          </button>
+        </form>
+      </div>
+
+      <!-- 加入群组表单 -->
+      <div id="join-group-form" class="modal hidden">
+        <h3>Join Group</h3>
+        <form id="join-group">
+          <label for="join-group-name">Group Name:</label>
+          <input
+            type="text"
+            id="join-group-name"
+            name="join-group-name"
+            required
+          />
+
+          <label for="join-group-password">Password:</label>
+          <input
+            type="password"
+            id="join-group-password"
+            name="join-group-password"
+          />
+
+          <button type="submit" class="btn-join">Join</button>
+          <button type="button" id="cancel-join" class="btn-cancel">
+            Cancel
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- 添加版权声明 -->
+    <footer id="copyright">
+      <p align='center'>
+        © <span id="current-year"></span>
+        <!-- GitHub 图标链接 -->
+        <a
+          href="https://github.com/HugoPhi"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="github-link"
+          >Yunming Hu</a
+        >
+        <!-- 这里使用GitHub的官方SVG图标 -->
+        <svg
+          class="github-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.68 7.68 0 012.0-.27c.68 0 1.36.09 2.0.27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+          />
+        </svg>
+        from CQU. All rights reserved.
+      </p>
+      <p>
+        If you think this project helps you, please 🌟
+        <a herf="https://github.com/HugoPhi/ChatApp">star</a>
+        it on GitHub.
+      </p>
+    </footer>
+
+    <!-- Quit Group Modal -->
+    <div id="quit-group-form" class="modal hidden">
+      <h3>Quit Group</h3>
+      <form id="quit-group">
+        <input type="hidden" id="quit-group-name" name="quit-group-name" />
+        <p>
+          Are you sure you want to quit the group "<span
+            id="quit-group-display-name"
+          ></span
+          >"?
+        </p>
+        <button type="submit" class="btn-quit">Quit</button>
+        <button type="button" id="cancel-quit" class="btn-cancel">
+          Cancel
+        </button>
+      </form>
+    </div>
+
+    <!-- Delete Group Modal -->
+    <div id="delete-group-form" class="modal hidden">
+      <h3>Delete Group</h3>
+      <form id="delete-group">
+        <input type="hidden" id="delete-group-name" name="delete-group-name" />
+        <p>
+          Are you sure to delete the group "<span
+            id="delete-group-display-name"
+          ></span
+          >"? This action cannot be undone.
+        </p>
+        <button type="submit" class="btn-delete">Delete</button>
+        <button type="button" id="cancel-delete" class="btn-cancel">
+          Cancel
+        </button>
+      </form>
+    </div>
+
+    <!-- Transfer Ownership Modal -->
+    <div id="transfer-ownership-form" class="modal hidden">
+      <h3>Transfer Group Ownership</h3>
+      <form id="transfer-ownership">
+        <input
+          type="hidden"
+          id="transfer-group-name"
+          name="transfer-group-name"
+        />
+
+        <label for="new-owner-username">New Owner Username:</label>
+        <input
+          type="text"
+          id="new-owner-username"
+          name="new-owner-username"
+          required
+        />
+
+        <button type="submit" class="btn-transfer">Transfer Ownership</button>
+        <button type="button" id="cancel-transfer" class="btn-cancel">
+          Cancel
+        </button>
+      </form>
+    </div>
 
     <script src="js/group_management.js"></script>
+    <script>
+      // 设置当前年份
+      document.addEventListener("DOMContentLoaded", () => {
+        const currentYear = new Date().getFullYear();
+        document.getElementById("current-year").textContent = currentYear;
+      });
+    </script>
   </body>
 </html>

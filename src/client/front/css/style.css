@@ -1,35 +1,51 @@
 /* style.css */
+@font-face {
+  font-family: "Nerd Font";
+  src: url("../assets/fonts/AnonymiceProNerdFontPropo-Regular.ttf")
+    format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
 
-/* 通用页面设置 */
+@font-face {
+  font-family: "Manjari";
+  src: url("../assets/fonts/Manjari-Regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Noto Serif SC";
+  src: url("../assets/fonts/NotoSerifSC-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* 页面整体布局设置 */
 body {
   margin: 0;
   padding: 0;
-  font-family: "Arial", sans-serif;
-  background-color: #f4f6f9;
-  color: #333;
+  font-family: "Manjari", "Noto Serif SC";
+  height: 100vh;
+  background: #ecf0f1;
+  display: flex;
+  flex-direction: column;
 }
 
-/* 通用按钮样式 */
-button {
-  cursor: pointer;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
+/* 通用图标样式 */
+.github-icon {
+  width: 24px; /* 设置宽度 */
+  height: 24px; /* 设置高度 */
+  /* 如果使用SVG，使用fill属性 */
+  fill: #333;
+  /* 如果使用Font Awesome，使用font-size属性 */
+  /* font-size: 24px; */
+  transition:
+    fill 0.3s,
+    color 0.3s;
 }
-
-button:hover {
-  opacity: 0.9;
-}
-
-/* 通用输入框样式 */
-input[type="text"],
-textarea {
-  width: 100%;
-  padding: 8px;
-  margin: 5px 0;
-  box-sizing: border-box;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  font-size: 16px;
+.github-link:hover .github-icon {
+  fill: #4078c0; /* GitHub 蓝色 */
+  /* 如果使用Font Awesome，使用color属性 */
+  /* color: #4078c0; */
 }
