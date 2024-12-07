@@ -1,5 +1,7 @@
 # ChatApp
 
+[TOC]
+
 ## 展示
 
 ### 登录&聊天
@@ -24,30 +26,58 @@
 
 ![细化](./doc/细化框架.png)
 
-## 细节
+## 数据流
 
-### 数据表和ER图
+### 数据表
 
 #### Client
 
-设计理念：Client只获取和自己有关的数据，不能冗余(获得某一类数据却从不使用)。
-其中：
+客户端的数据库主要是便于前后端交互以及前端显示数据。只有前端需要的数据是被需要的和被许可获取的。
 
-- 前端自发只读：`groups.csv`、`users.csv`、`current_groups.csv`、`message.csv`。
-- 后端自发读：`groups.csv`、`users.csv`，写：`message.csv`。
-- `users.csv`，`current_groups.csv`，`groups.csv`都由服务器发送过来的请求更新。
+##### 字段
 
-读写权限表如下：
+1. current_groups.csv：记录所有在线的群组
 
-| 对象\文件      | groups.csv | users.csv | current_groups.csv | message.csv |
-| -------------- | ---------- | --------- | ------------------ | ----------- |
-| Client Front   | R          | R         | R                  | R           |
-| Client Back    | R          | R         | \                  | W           |
-| Server Request | W          | W         | W                  | \           |
+```json
+{
+    "name": 群组名，小于15chars,
+    "type": public/private,
+}
+```
+
+2. gourps.csv：记录所有和当前用户有关的用户名
+
+```json
+{
+    "name": 群组名，小于15chars,
+    "owner": 用户名（考虑改成是否是自己：Yes or No）
+}
+```
+
+3. users.csv：当前在线的所有用户
+
+```json
+{
+    "name": 用户名
+}
+```
+
+4. message.csv：该用户收到的所有消息列表
+
+```json
+{
+    "timestamp":时间戳,
+    "source":发送者,
+    "target":接收者,
+    "type":内容类型,
+    "content":内容,
+    "message_type":消息类型
+}
+```
 
 
 
-CSV例子如下：
+##### CSV例子
 
 1. current_groups.csv:
 
@@ -103,6 +133,199 @@ Yunming Hu
 ```
 
 #### Server
+
+Server维护的东西有：
+
+1. 所有的在线用户的{用户名:FullDuplex对象}字典。
+2. 维护群组有关信息的{群组：用户列表,属性s}字典。
+
+具体维护的东西如下：
+
+- 群组字典
+
+```json
+Groups = {
+    "group1": {
+        "type": Enum.private,
+        "max_scale": 50,  // 最多容纳的用户数，即用户列表的最大长度。
+        "password": "123456",
+        "owner": "somebody",
+        "group1": [
+            "user1", 
+            "user2"
+        ],
+    },
+    "group2": {
+        "type": Enum.private,
+        "max_scale": 150,  // 最多容纳的用户数，即用户列表的最大长度。
+        "password": "hhh123456",
+        "owner": "somebody",
+        "group2": [
+            "user2",
+            "user3",
+            ...
+        ],
+    },
+    ...
+}
+```
+
+- 用户-FullDuplex对象
+
+```json
+Users = {
+    "user1": FullDuplex1,
+    "user2": FullDuplex2,
+    ...
+}
+```
+
+- 就绪队列
+
+由用户名组成，方便调用相应的FullDuplex实例来完成任务。过程是：从就绪队列中取出用户名，从对应的FullDuplex1取出一条消息，执行这一条消息。要加读写锁，由每一个handle_client线程(push)和主任务线程竞争（get）。
+
+
+
+### 数据报格式
+
+数据报分成4种，分别是TEXT，FILE，IMAGE，CMD。其格式如下：
+
+```python
+{
+    'type' (int):
+        The message type, where:
+        1 - Text: FullDuplex.ProtocalHead.TEXT
+        2 - File: FullDuplex.ProtocalHead.FILE
+        3 - Image: FullDuplex.ProtocalHead.IMAGE
+        4 - Command: FullDuplex.ProtocalHead.CMD
+    'source' (str):
+        The sender's nickname or group name.
+        ! Or 'Server': to emit the CMD to update user_table & group_table of client. Sent two files.
+    'target' (str):
+        The receiver's nickname or group name.
+    'timestamp' (str):
+        The formatted timestamp, which must be generated using `get_timestamp()` method.
+    'message_type' (str):
+        Either "single" or "group", indicating whether the message is sent to one recipient or multiple.
+    'content' (str | dict):
+        The message content, as follows:
+        - If 'type' == 1 (text), 'content' should be the text message (string).
+        - If 'type' == 2 (file) or 'type' == 3 (image), 'content' should be a dictionary containing:
+        {
+            'file_name' (str): The name of the file or image.
+            'file_path' (str): The path to the file or image.
+        }
+        - If 'type' == 4 (command), 'content' should be a dictionary containing:
+        {
+            'command' (int): The command to be executed. (enum)
+            'args' (list): A list of arguments for the command.
+        }
+}
+```
+
+另外，CMD的类型有如下，以及对应的描述：
+
+| CMD id | Type      | name                  | args                             |                         discription                          |
+| ------ | --------- | --------------------- | -------------------------------- | :----------------------------------------------------------: |
+| 1      | C2S       | Create Group          | type, max_scale, password, owner | Client想要创建群组，Server要添加对应的项，创建完后提醒所有人更新 |
+| 2      | S2C       | Update Created Group  | name, owener, password           | Server提醒所有Client更新group.csv & current_groups.csv，需要name，type，owner |
+| 3      | C2S       | Quit Group            | gourp_name,user_name             |                 从群组字典对应项中移除这个人                 |
+| 4      | S2C       | Quited Group          | signal,group_name                |    已经退出，只对对应的用户发送；用户收到后修改groups.csv    |
+| 5      | C2S       | Join Group            | gourp_name,user_name,passward    |               则发送请求到Server验证并作出修改               |
+| 6      | S2C       | Joined Group          | signal,group_name,type           |  是否加入成功，只对对应的用户发送；用户收到后修改gourps.csv  |
+| 7      | C2S       | Move Owner            | gourp_name,user_name             | 转移所有权，Server收到后检查是否有权限执行，有权限则执行（一般有权限才能点），转移给user_name，否则Pass |
+| 8      | S2C       | Moved Group           | signal                           |                         转移成功没有                         |
+| 9      | S2C       | Moved to you          | signal,group_name                |              转移给你了，Client直接修改必须接受              |
+| 10     | C2S       | Delete Group          | group_name                       |              删除群，要给所有人转发，gourp_name              |
+| 11     | S2CCMD_id | Update Deleted  Group | group_name                       | Server提醒所有Client更新group.csv & current_groups.csv，需要name，type，owner |
+| 12     | S2C       | Created User          | user_name                        |               Server提醒所有Client更新user.csv               |
+| 13     | S2C       | Deleted User          | user_name                        |               Server提醒所有Client更新user.csv               |
+| 14     | S2C       | Deleted Group         | signal, group_name               |                         删除成功没有                         |
+| 15     | S2C       | Created Group         | signal,group_name                |                         创建成功没有                         |
+
+
+
+### 登录流程
+
+Client创建实例时会向Server发送请求，Server接到请求后创建实例，如果连接成功这时候就应该都进去了，Client开启循环线程get实例的消息。
+
+- Server要先把当前用户列表和当前群组列表发送给Client，都使用超长文本的方式传输，传输完之后向所有的用户发送CMD12。
+
+- Client循环get收到之后看到类型是TEXT且检查source如果是Server的话就解析并以高效的方式写入数据库。
+
+### 发送检查
+
+主要是本地查错功能，确保发送到Server端的数据没有类似于没有用户和群组的数据问题：
+
+#### client
+
+1. TEXT/FILE/IMAGE
+
+这里直接发就行。
+
+2. CMD
+
+| CMD id | operations                                 |
+| ------ | ------------------------------------------ |
+| 1      | /                                          |
+| 3      | 查看是不是在这个群组中，是才能退           |
+| 5      | 查看是否已经在这个群组之中，不在才可以加入 |
+| 7      | 检查是否有对群组转移权，有才可以执行       |
+| 10     | 同上                                       |
+
+
+
+### 接受执行
+
+#### client
+
+1. TEXT/FILE/IMAGE
+
+由于FullDuplex会保存文件，所以这里直接按照格式，以时间为顺序（直接字典序比较即可）二分写入消息队列即可。
+
+2. CMD
+
+| CMD id | operations                                                   |
+| ------ | ------------------------------------------------------------ |
+| 2      | 把name和type写入current_groups.csv；把name和owner写入groups.csv |
+| 4      | signal显示OK修改groups.csv：把对应的项从其中删除；显示Error则报错 |
+| 6      | signal显示OK修改groups.csv：把对应的groups_name和type加入其中；显示PasswordError，Member Max，报相应的错 |
+| 8      | 报错Move失败                                                 |
+| 9      | 修改gourps.csv的owner为自己的用户名                          |
+| 11     | 把对应的项从groups.csv和current_groups.csv中移除             |
+| 12     | 添加user_name到users.csv                                     |
+| 13     | 删除user_name到users.csv                                     |
+| 14     | 报错Delete失败                                               |
+| 15     | 报错Create失败                                               |
+
+
+
+#### server
+
+这里展示的是主线程从就绪队列中拿到处理序号之后的事情。
+
+1. TEXT/FILE/IMAGE
+
+- 查看消息类型：
+  - individual：调用对应的用户实例发送消息
+  - group：获取的Gourps用户列表并遍历发送消息
+- 执行完后查看内容类型：
+  - 如果是File/IMAGE就删除对应的文件以免占用空间
+
+3. CMD
+
+| CMD id | operations                                                   |
+| ------ | ------------------------------------------------------------ |
+| 1      | 根据发送来的消息为Groups创建新的项，并转发所有的用户CMD2，向原始用户发送CMD15；失败则向原始用户发送CMD15 |
+| 3      | 从群组中移除这个人，并向这个人发送CMD4                       |
+| 5      | 1，如果是public，验证是否超过人数上限，如果超过，发送CMD6给对应的用户，signal=Max Member；否则加入这个人并发送CMD6<br />2，如果是private，验证密码，错误发送CMD6给对应的用户signal=Password Error；否则验证是否超过人数上限，如果超过，发送CMD6给对应的用户，signal=Max Member；否则加入这个人并发送CMD6 |
+| 7      | 把对应的群组owner改成修改后的user_name，如果没有这个修改之后的人则发送CMD8：No Such User；有这个人则向之前的user发送CMD8，向修改后的user发送CMD9 |
+| 10     | 先获取对应群组的用户列表，然后向所有的用户发送CMD11，向原始用户发送CMD14；失败则向原始用户发送CMD14 |
+
+### 退出流程
+
+Server检测到退出之后，删除用户列表中对应的项，并向所有的用户发送CMD13。
+
 
 
 ## TODO

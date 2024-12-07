@@ -246,6 +246,7 @@ function hideTransferOwnershipForm() {
 async function handleCreateGroup(event) {
     event.preventDefault();
     const groupName = document.getElementById('group-name').value.trim();
+    const groupMaxPeople = document.getElementById('group-max-people').value.trim();
     const groupPassword = document.getElementById('group-password').value.trim();
 
     if (groupName === '') {
