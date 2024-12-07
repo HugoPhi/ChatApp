@@ -251,22 +251,22 @@ Users = {
 另外，CMD的类型有如下，以及对应的描述：
 
 | CMD id | Type      | name                  | args                             |                         discription                          |
-| ------ | --------- | --------------------- | -------------------------------- | :----------------------------------------------------------: |
+| ------ | --------- | --------------------- | -------------------------------- | ---------------------------------------------------------- |
 | 1      | C2S       | Create Group          | type, max_scale, password, owner | Client想要创建群组，Server要添加对应的项，创建完后提醒所有人更新 |
 | 2      | S2C       | Update Created Group  | name, owener, password           | Server提醒所有Client更新group.csv & current_groups.csv，需要name，type，owner |
 | 3      | C2S       | Quit Group            | gourp_name,user_name             |                 从群组字典对应项中移除这个人                 |
-| 4      | S2C       | Quited Group          | signal,group_name                |    已经退出，只对对应的用户发送；用户收到后修改groups.csv    |
+| 4      | S2C       | Quited Group          | signal                |    已经退出，只对对应的用户发送；用户收到后修改groups.csv    |
 | 5      | C2S       | Join Group            | gourp_name,user_name,passward    |               则发送请求到Server验证并作出修改               |
 | 6      | S2C       | Joined Group          | signal,group_name,type           |  是否加入成功，只对对应的用户发送；用户收到后修改gourps.csv  |
 | 7      | C2S       | Move Owner            | gourp_name,user_name             | 转移所有权，Server收到后检查是否有权限执行，有权限则执行（一般有权限才能点），转移给user_name，否则Pass |
 | 8      | S2C       | Moved Group           | signal                           |                         转移成功没有                         |
 | 9      | S2C       | Moved to you          | signal,group_name                |              转移给你了，Client直接修改必须接受              |
 | 10     | C2S       | Delete Group          | group_name                       |              删除群，要给所有人转发，gourp_name              |
-| 11     | S2CCMD_id | Update Deleted  Group | group_name                       | Server提醒所有Client更新group.csv & current_groups.csv，需要name，type，owner |
+| 11     | S2C       | Update Deleted  Group | group_name                       | Server提醒所有Client更新group.csv & current_groups.csv，需要name，type，owner |
 | 12     | S2C       | Created User          | user_name                        |               Server提醒所有Client更新user.csv               |
 | 13     | S2C       | Deleted User          | user_name                        |               Server提醒所有Client更新user.csv               |
-| 14     | S2C       | Deleted Group         | signal, group_name               |                         删除成功没有                         |
-| 15     | S2C       | Created Group         | signal,group_name                |                         创建成功没有                         |
+| 14     | S2C       | Deleted Group         | signal               |                         删除成功没有                         |
+| 15     | S2C       | Created Group         | signal                |                         创建成功没有                         |
 
 
 
@@ -295,7 +295,7 @@ Client创建实例时会向Server发送请求，Server接到请求后创建实�
 | 1      | /                                          |
 | 3      | 查看是不是在这个群组中，是才能退           |
 | 5      | 查看是否已经在这个群组之中，不在才可以加入 |
-| 7      | 检查是否有对群组转移权，有才可以执行       |
+| 7      | 检查是否有对群组转移权，有就把gourps.csv对应的项修改       |
 | 10     | 同上                                       |
 
 
@@ -315,7 +315,7 @@ Client创建实例时会向Server发送请求，Server接到请求后创建实�
 | 2      | 把name和type写入current_groups.csv；把name和owner写入groups.csv |
 | 4      | signal显示OK修改groups.csv：把对应的项从其中删除；显示Error则报错 |
 | 6      | signal显示OK修改groups.csv：把对应的groups_name和type加入其中；显示PasswordError，Member Max，报相应的错 |
-| 8      | 报错Move失败                                                 |
+| 8      | 如果成功就把gourps.csv对应的项改成相应的名字，否则报错                                              |
 | 9      | 修改gourps.csv的owner为自己的用户名                          |
 | 11     | 把对应的项从groups.csv和current_groups.csv中移除             |
 | 12     | 添加user_name到users.csv                                     |
@@ -436,3 +436,16 @@ TODO List:
 
 %1(release v1.0.0): 完善文档
 ```
+
+## 测试
+
+测试在`./test/`下，分为前端和后端两个部分。前端测试在`./test/frontend/`下，后端测试在`./test/backend/`下，被测试模块通过软链接添加，具体可以看代码。
+
+### 前端测试条目
+
+
+### 后端测试条目
+
+#### core.py(NetWork Core)
+#### ClientDatabase.py(CB-DB)
+

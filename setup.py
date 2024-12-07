@@ -65,8 +65,7 @@ def setup_client(port, use_existing_db=False):
 def run_setup_script():
     """
     如果你有其他需要在配置后运行的脚本，可以在这里调用。
-    例如：调用其他 Python 脚本或执行系统命令。
-    """
+    例如：调用其他 Python 脚本或执行系统命令。 """
     # 示例：打印一条信息
     console.print("[bold blue]执行额外的设置脚本...[/bold blue]")
     # 你可以在这里添加实际的脚本调用逻辑

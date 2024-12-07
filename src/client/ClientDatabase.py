@@ -9,6 +9,7 @@ class dops:
             os.mkdir(dbpath)
 
         self.gourps_table = dbpath + "groups.csv"
+        self.current_groups_table = dbpath + "current_groups.csv"
         self.users_table = dbpath + "users.csv"
         self.message_table = dbpath + "message.csv"
 
@@ -21,27 +22,34 @@ class dops:
         if os.path.exists(self.message_table):
             raise Exception("[!] Message File exists.")
 
-        self.users = {
-            "name": []
-        }
-        self.groups = {
-            "name": [],
-            "created_by_user": []  # true, or false, lowercase only
-        }
+        if os.path.exists(self.current_groups_table):
+            raise Exception("[!] Current Groups File exists.")
 
-        with open(self.users_file, mode='a', newline='', encoding='utf-8') as csvfile:
-            fieldnames = list(self.users.keys())
+        with open(self.users_table, mode='a', newline='', encoding='utf-8') as csvfile:
+            fieldnames = [
+                "name"
+            ]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
             writer.writeheader()  # write in table title
-            writer.writerow()  # write a blank line
 
-        with open(self.gourps_file, mode='a', newline='', encoding='utf-8') as csvfile:
-            fieldnames = list(self.groups.keys())
+        with open(self.gourps_table, mode='a', newline='', encoding='utf-8') as csvfile:
+            fieldnames = [
+                "name",
+                "owner"
+            ]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
             writer.writeheader()  # write in table title
-            writer.writerow()  # write a blank line
+
+        with open(self.current_groups_table, mode='a', newline='', encoding='utf-8') as csvfile:
+            fieldnames = [
+                "name",
+                "type"
+            ]
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+            writer.writeheader()  # write in table title
 
         with open(self.message_table, mode='a', newline='', encoding='utf-8') as csvfile:
             fieldnames = [
@@ -55,9 +63,8 @@ class dops:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
             writer.writeheader()  # write in table title
-            writer.writerow()  # write a blank line
 
-        print("[*] Database initialized.")
+        print(f"[*] Database initialized {dbpath}")
 
     def __del__(self):
         pass
@@ -90,16 +97,33 @@ class dops:
             }
         """
 
+        with open(self.message_table, mode='a', newline='', encoding='utf-8') as csvfile:
+            fieldnames = [
+                "type",
+                "source",
+                "target",
+                "timestamp",
+                "message_type",
+                "content"
+            ]
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+            writer.writerow(message)
+
+    def insert_user(self):
         pass
 
-    def update_usrs(self):
+    def delete_usr(self):
         pass
 
-    def update_groups(self):
+    def insert_group(self):
         pass
 
-    def get_usrs(self):
+    def delete_group(self):
         pass
 
-    def get_groups(self):
+    def move_to(self):
+        '''
+        you or other
+        '''
         pass
