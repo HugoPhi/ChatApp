@@ -225,23 +225,23 @@ Users = {
 
 另外，CMD的类型有如下，以及对应的描述：
 
-| CMD id | Type | name                  | args                             |                         discription                          |
-| ------ | ---- | --------------------- | -------------------------------- | :----------------------------------------------------------: |
-| 1      | C2S  | Create Group          | type, max_scale, password, owner | Client想要创建群组，Server要添加对应的项，创建完后提醒所有人更新 |
-| 2      | S2C  | Update Created Group  | name, owener, password           | Server提醒所有Client更新group.csv & current_groups.csv，需要name，type，owner |
-| 3      | C2S  | Quit Group            | gourp_name,user_name             |                 从群组字典对应项中移除这个人                 |
-| 4      | S2C  | Quited Group          | signal,group_name                |    已经退出，只对对应的用户发送；用户收到后修改groups.csv    |
-| 5      | C2S  | Join Group            | gourp_name,user_name,passward    |               则发送请求到Server验证并作出修改               |
-| 6      | S2C  | Joined Group          | signal,group_name,type           |  是否加入成功，只对对应的用户发送；用户收到后修改gourps.csv  |
-| 7      | C2S  | Move Owner            | gourp_name,user_name             | 转移所有权，Server收到后检查是否有权限执行，有权限则执行（一般有权限才能点），转移给user_name，否则Pass |
-| 8      | S2C  | Moved Group           | signal                           |                         转移成功没有                         |
-| 9      | S2C  | Moved to you          | signal,group_name                |              转移给你了，Client直接修改必须接受              |
-| 10     | C2S  | Delete Group          | group_name                       |              删除群，要给所有人转发，gourp_name              |
-| 11     | S2C  | Update Deleted  Group | group_name                       | Server提醒所有Client更新group.csv & current_groups.csv，需要name，type，owner |
-| 12     | S2C  | Created User          | user_name                        |               Server提醒所有Client更新user.csv               |
-| 13     | S2C  | Deleted User          | user_name                        |               Server提醒所有Client更新user.csv               |
-| 14     | S2C  | Deleted Group         | signal, group_name               |                         删除成功没有                         |
-| 15     | S2C  | Created Group         | signal,group_name                |                         创建成功没有                         |
+| CMD id | Type      | name                  | args                             |                         discription                          |
+| ------ | --------- | --------------------- | -------------------------------- | :----------------------------------------------------------: |
+| 1      | C2S       | Create Group          | type, max_scale, password, owner | Client想要创建群组，Server要添加对应的项，创建完后提醒所有人更新 |
+| 2      | S2C       | Update Created Group  | name, owener, password           | Server提醒所有Client更新group.csv & current_groups.csv，需要name，type，owner |
+| 3      | C2S       | Quit Group            | gourp_name,user_name             |                 从群组字典对应项中移除这个人                 |
+| 4      | S2C       | Quited Group          | signal,group_name                |    已经退出，只对对应的用户发送；用户收到后修改groups.csv    |
+| 5      | C2S       | Join Group            | gourp_name,user_name,passward    |               则发送请求到Server验证并作出修改               |
+| 6      | S2C       | Joined Group          | signal,group_name,type           |  是否加入成功，只对对应的用户发送；用户收到后修改gourps.csv  |
+| 7      | C2S       | Move Owner            | gourp_name,user_name             | 转移所有权，Server收到后检查是否有权限执行，有权限则执行（一般有权限才能点），转移给user_name，否则Pass |
+| 8      | S2C       | Moved Group           | signal                           |                         转移成功没有                         |
+| 9      | S2C       | Moved to you          | signal,group_name                |              转移给你了，Client直接修改必须接受              |
+| 10     | C2S       | Delete Group          | group_name                       |              删除群，要给所有人转发，gourp_name              |
+| 11     | S2CCMD_id | Update Deleted  Group | group_name                       | Server提醒所有Client更新group.csv & current_groups.csv，需要name，type，owner |
+| 12     | S2C       | Created User          | user_name                        |               Server提醒所有Client更新user.csv               |
+| 13     | S2C       | Deleted User          | user_name                        |               Server提醒所有Client更新user.csv               |
+| 14     | S2C       | Deleted Group         | signal, group_name               |                         删除成功没有                         |
+| 15     | S2C       | Created Group         | signal,group_name                |                         创建成功没有                         |
 
 
 
@@ -253,17 +253,29 @@ Client创建实例时会向Server发送请求，Server接到请求后创建实�
 
 - Client循环get收到之后看到类型是TEXT且检查source如果是Server的话就解析并以高效的方式写入数据库。
 
-### 发送执行表（本地查错功能！TODO）
+### 发送检查
+
+主要是本地查错功能，确保发送到Server端的数据没有类似于没有用户和群组的数据问题：
 
 #### client
 
+1. TEXT/FILE/IMAGE
+
+这里直接发就行。
+
+2. CMD
+
+| CMD id | operations                                 |
+| ------ | ------------------------------------------ |
+| 1      | /                                          |
+| 3      | 查看是不是在这个群组中，是才能退           |
+| 5      | 查看是否已经在这个群组之中，不在才可以加入 |
+| 7      | 检查是否有对群组转移权，有才可以执行       |
+| 10     | 同上                                       |
 
 
-#### server
 
-
-
-### 接受执行表
+### 接受执行
 
 #### client
 
@@ -273,7 +285,7 @@ Client创建实例时会向Server发送请求，Server接到请求后创建实�
 
 2. CMD
 
-| CMD_id | operations                                                   |
+| CMD id | operations                                                   |
 | ------ | ------------------------------------------------------------ |
 | 2      | 把name和type写入current_groups.csv；把name和owner写入groups.csv |
 | 4      | signal显示OK修改groups.csv：把对应的项从其中删除；显示Error则报错 |
@@ -302,12 +314,12 @@ Client创建实例时会向Server发送请求，Server接到请求后创建实�
 
 3. CMD
 
-| CMD_id | operations                                                   |
+| CMD id | operations                                                   |
 | ------ | ------------------------------------------------------------ |
 | 1      | 根据发送来的消息为Groups创建新的项，并转发所有的用户CMD2，向原始用户发送CMD15；失败则向原始用户发送CMD15 |
 | 3      | 从群组中移除这个人，并向这个人发送CMD4                       |
 | 5      | 1，如果是public，验证是否超过人数上限，如果超过，发送CMD6给对应的用户，signal=Max Member；否则加入这个人并发送CMD6<br />2，如果是private，验证密码，错误发送CMD6给对应的用户signal=Password Error；否则验证是否超过人数上限，如果超过，发送CMD6给对应的用户，signal=Max Member；否则加入这个人并发送CMD6 |
-| 7      | 把对应的群组owner改成修改后的user_name，并向之前的user发送CMD8，向修改后的user发送CMD9 |
+| 7      | 把对应的群组owner改成修改后的user_name，如果没有这个修改之后的人则发送CMD8：No Such User；有这个人则向之前的user发送CMD8，向修改后的user发送CMD9 |
 | 10     | 先获取对应群组的用户列表，然后向所有的用户发送CMD11，向原始用户发送CMD14；失败则向原始用户发送CMD14 |
 
 ### 退出流程
