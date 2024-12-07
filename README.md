@@ -1,6 +1,5 @@
 # ChatApp
 
-[TOC]
 
 ## 展示
 
@@ -40,8 +39,8 @@
 
 ```json
 {
-    "name": 群组名，小于15chars,
-    "type": public/private,
+    "name": "群组名，小于15chars",
+    "type": "public/private",
 }
 ```
 
@@ -49,8 +48,8 @@
 
 ```json
 {
-    "name": 群组名，小于15chars,
-    "owner": 用户名（考虑改成是否是自己：Yes or No）
+    "name": "群组名，小于15chars",
+    "owner": "用户名（考虑改成是否是自己：Yes or No）"
 }
 ```
 
@@ -58,7 +57,7 @@
 
 ```json
 {
-    "name": 用户名
+    "name": "用户名"
 }
 ```
 
@@ -66,12 +65,12 @@
 
 ```json
 {
-    "timestamp":时间戳,
-    "source":发送者,
-    "target":接收者,
-    "type":内容类型,
-    "content":内容,
-    "message_type":消息类型
+    "timestamp":"时间戳",
+    "source":"发送者",
+    "target":"接收者",
+    "type":"内容类型",
+    "content":"内容",
+    "message_type":"消息类型"
 }
 ```
 
@@ -143,7 +142,7 @@ Server维护的东西有：
 
 - 群组字典
 
-```json
+```python
 Groups = {
     "group1": {
         "type": Enum.private,
@@ -172,7 +171,7 @@ Groups = {
 
 - 用户-FullDuplex对象
 
-```json
+```python
 Users = {
     "user1": FullDuplex1,
     "user2": FullDuplex2,
