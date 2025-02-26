@@ -77,7 +77,18 @@ class FullDuplex:
 
     class ProtocalHead:
         """
-        FileType ProtocalHead
+        FileType ProtocalHead:
+
+        1 - Text
+        2 - File
+        3 - Image
+        4 - Command
+
+        @attributes:
+        TEXT = 1
+        FILE = 2
+        IMAGE = 3
+        CMD = 4
         """
 
         TEXT = 1

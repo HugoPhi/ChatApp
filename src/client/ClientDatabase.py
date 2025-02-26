@@ -53,12 +53,12 @@ class dops:
 
         with open(self.message_table, mode='a', newline='', encoding='utf-8') as csvfile:
             fieldnames = [
-                "type",
+                "timestamp",
                 "source",
                 "target",
-                "timestamp"
+                "type",
+                "content",
                 "message_type",
-                "content"
             ]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
@@ -70,48 +70,39 @@ class dops:
         pass
 
     def write_message(self, message):
-        """
-            {
-                'type' (int):
-                    The message type, where:
-                    1 - Text: FullDuplex.ProtocalHead.TEXT
-                    2 - File: FullDuplex.ProtocalHead.FILE
-                    3 - Image: FullDuplex.ProtocalHead.IMAGE
-                    4 - Command: FullDuplex.ProtocalHead.CMD
-                'source' (str):
-                    The sender's nickname or group name. Or 'Server'  # TODO
-                'target' (str):
-                    The receiver's nickname or group name.
-                'timestamp' (str):
-                    The formatted timestamp, which must be generated using `get_timestamp()` method.
-                'message_type' (str):
-                    Either "single" or "group", indicating whether the message is sent to one recipient or multiple.
-                'content' (str | dict):
-                    The message content, as follows:
-                    - If 'type' == 1 (text), 'content' should be the text message (string).
-                    - If 'type' == 2 (file) or 'type' == 3 (image), 'content' should be a dictionary containing:
-                    {
-                        'file_name' (str): The name of the file or image.
-                        'file_path' (str): The path to the file or image.
-                    }
-            }
-        """
-
         with open(self.message_table, mode='a', newline='', encoding='utf-8') as csvfile:
             fieldnames = [
-                "type",
+                "timestamp",
                 "source",
                 "target",
-                "timestamp",
+                "type",
+                "content",
                 "message_type",
-                "content"
             ]
+
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
-            writer.writerow(message)
+            type_i2str = {
+                1: "text",
+                2: "file",
+                3: "image"
+            }
 
-    def insert_user(self):
-        pass
+            fmt_message = {field: message.get(field, "") for field in fieldnames}
+
+            fmt_message["type"] = type_i2str[message.get("type", 1)]
+
+            writer.writerow(fmt_message)
+
+    def insert_user(self, user_name):
+        with open(self.users_table, mode='a', newline='', encoding='utf-8') as csvfile:
+            fieldnames = [
+                "name"
+            ]
+
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+            writer.writerow({"name": user_name})
 
     def delete_usr(self):
         pass
